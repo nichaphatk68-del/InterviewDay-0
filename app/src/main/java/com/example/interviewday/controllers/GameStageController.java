@@ -1,68 +1,145 @@
 package com.example.interviewday.controllers;
 
+import com.example.interviewday.models.Item;
+import com.example.interviewday.models.Level;
+import com.example.interviewday.models.Level1;
+import com.example.interviewday.models.Level2;
+import com.example.interviewday.models.Level3;
+import com.example.interviewday.models.SecretItem;
+
+import java.util.List;
+
 public class GameStageController {
     // --Attributes--
     private int currentStage;
+    private Level currentLevel;
+    private TimerController timerController;
     private String gameState;
     private boolean isPlaying;
-    private int questProgress;
 
     // --Constructor--
-    public GameStageController(){
-        this.currentStage = 1;
+    public GameStageController() {
+        this(1);
+    }
+
+    public GameStageController(int stageNumber) {
+        this.currentStage = stageNumber;
         this.gameState = "IDLE";
         this.isPlaying = false;
-        this.questProgress = 0;
+        this.timerController = new TimerController();
+        loadLevel(stageNumber);
     }
 
-    // --Methods--
-    //1.startStage(int stage) — เริ่มต้นเล่นด่านตามด่านที่ระบุ
-    public void startStage(int stage){
-        this.currentStage = stage;
+    public void loadLevel(int stageNumber) {
+        this.currentStage = stageNumber;
+        switch (stageNumber) {
+            case 2:
+                this.currentLevel = new Level2();
+                break;
+            case 3:
+                this.currentLevel = new Level3();
+                break;
+            case 1:
+            default:
+                this.currentLevel = new Level1();
+                break;
+        }
+    }
+
+    public void startStage() {
         this.gameState = "PLAYING";
         this.isPlaying = true;
-        this.questProgress = 0;
+        if (currentLevel != null) {
+            currentLevel.startLevel();
+        }
+        if (timerController != null) {
+            timerController.startTimer();
+        }
     }
-    //2.pauseStage() — หยุดเกมในด่านชั่วคราว
-    public void pauseStage(){
+
+    public void pauseStage() {
         this.gameState = "PAUSED";
         this.isPlaying = false;
+        if (timerController != null) {
+            timerController.pauseTimer();
+        }
     }
-    //3.resumeStage() — กลับมาเล่นเกมในด่านต่อ
-    public void resumeStage(){
+
+    public void resumeStage() {
         this.gameState = "PLAYING";
         this.isPlaying = true;
+        if (timerController != null) {
+            timerController.resumeTimer();
+        }
     }
-    //4.handlePlayerAction(String actionType) — รับการกระทำของผู้เล่น (เช่น กดเก็บไอเท็ม)
-    public void handlePlayerAction(String actionType) {
-        if (!isPlaying) return;
 
-        if ("COLLECT_ITEM".equals(actionType)){
-            this.questProgress++;
-            checkGameRule();
-        }
-    }
-    //5.updateGameUI() — อัปเดตการแสดงผลหน้าจอ
-    public void updateGameUI(){}// โค้ดสำหรับสั่งอัปเดตหน้าจอ UI
-    //6.checkGameRule() — เช็กกติกาว่าผ่านด่านหรือยัง (เช่น เก็บไอเท็มหลักครบ 3 ชิ้น)
-    public boolean checkGameRule(){
-        if (questProgress >= 3 ){
-            finishStage();
-            return true;
-        }
-        return false;
-    }
-    //7.finishStage() — เมื่อผ่านด่านหรือจบด่านแล้ว
-    public void finishStage(){
-        this.gameState = "FINISHED";
+    public void stopStage() {
+        this.gameState = "STOPPED";
         this.isPlaying = false;
+        if (timerController != null) {
+            timerController.stopTimer();
+        }
     }
 
-    // --Getters--
-    public int getCurrentStage() { return currentStage; }
-    public void setCurrentStage(int currentStage) { this.currentStage = currentStage; }
-    public String getGameState() { return gameState; }
-    public boolean isPlaying() { return isPlaying; }
-    public int getQuestProgress() { return questProgress; }
+    // จัดการเก็บไอเทมปกติ
+    public boolean collectNormalItem(int itemIndex) {
+        if (currentLevel == null) return false;
+        List<Item> items = currentLevel.getRequiredItems();
+        if (itemIndex >= 0 && itemIndex < items.size()) {
+            Item item = items.get(itemIndex);
+            item.collect();
+        }
+        return currentLevel.isAllItemsFound();
+    }
 
+    // จัดการเก็บไอเทมลับ
+    public String collectSecretItem() {
+        if (currentLevel == null) return "";
+        SecretItem secret = currentLevel.getSecretItem();
+        if (secret != null) {
+            secret.collect();
+            return secret.getItemName();
+        }
+        return "";
+    }
+
+    public boolean isAllItemsFound() {
+        return currentLevel != null && currentLevel.isAllItemsFound();
+    }
+
+    public Level getCurrentLevel() {
+        return currentLevel;
+    }
+
+    public List<Item> getNormalItems() {
+        return currentLevel != null ? currentLevel.getRequiredItems() : null;
+    }
+
+    public SecretItem getSecretItem() {
+        return currentLevel != null ? currentLevel.getSecretItem() : null;
+    }
+
+    public int getBackgroundResId() {
+        return currentLevel != null ? currentLevel.getGameBgResId() : 0;
+    }
+
+    public TimerController getTimerController() {
+        return timerController;
+    }
+
+    public int getCurrentStage() {
+        return currentStage;
+    }
+
+    public void setCurrentStage(int currentStage) {
+        this.currentStage = currentStage;
+    }
+
+    public String getGameState() {
+        return gameState;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
 }

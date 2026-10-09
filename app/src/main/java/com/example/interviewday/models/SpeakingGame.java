@@ -12,8 +12,17 @@ public class SpeakingGame extends MiniGame {
         this.expectedPhrase = expectedPhrase;
     }
 
+    public String getExpectedPhrase() {
+        return expectedPhrase;
+    }
+
+    public void setExpectedPhrase(String expectedPhrase) {
+        this.expectedPhrase = expectedPhrase;
+    }
+
     @Override
     public boolean checkAnswer(String playerInput) {
+        if (playerInput == null || expectedPhrase == null) return false;
         boolean isCorrect = playerInput.trim().equalsIgnoreCase(expectedPhrase.trim());
         System.out.println("[Speaking] ตรวจคำตอบจากการพูด: " + (isCorrect ? "ถูกต้อง" : "ผิด"));
         return isCorrect;

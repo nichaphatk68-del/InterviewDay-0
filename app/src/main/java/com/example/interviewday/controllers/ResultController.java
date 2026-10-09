@@ -1,51 +1,71 @@
 package com.example.interviewday.controllers;
 
+import com.example.interviewday.R;
+
 public class ResultController {
     // --Attributes--
-    private int correctCount;// — จำนวนข้อที่ตอบถูกต้อง
-    private int totalQuestion;//— จำนวนคำถามทั้งหมด
-    private String result;//— ผลลัพธ์สรุป (เช่น "PASS", "FAIL", "PENDING")
+    private int correctCount;
+    private int totalQuestion;
+    private String result;
 
     // --Constructor--
-    public ResultController(){
+    public ResultController() {
         this.correctCount = 0;
         this.totalQuestion = 0;
         this.result = "PENDING";
     }
 
-    // --Methods--
-    //1.checkPass() — เช็กว่าเกณฑ์คะแนนสอบผ่านหรือไม่ (เช่น ตอบถูกตั้งเเต่ 50% ขึ้นไป)
-    public boolean checkPass(){
+    public boolean checkPass() {
         if (totalQuestion == 0) return false;
-        double scorePercent = ((double) correctCount / totalQuestion)* 100;
-        return scorePercent >= 50.0; // ผ่านเกณฑ์ 50%
+        double scorePercent = ((double) correctCount / totalQuestion) * 100;
+        return scorePercent >= 50.0;
     }
-    //2.checkFail() — เช็กว่าตกเกณฑ์หรือไม่
-    public boolean checkFail(){
+
+    public boolean checkFail() {
         return !checkPass();
     }
-    //3.checkResult(int correctCount, int totalQuestion) — ตรวจคำตอบและประมวลผลสรุป
-    public String checkResult(int correctCount, int totalQuestion){
+
+    public String checkResult(int correctCount, int totalQuestion) {
         this.correctCount = correctCount;
         this.totalQuestion = totalQuestion;
 
-        if (checkPass()){
-            this.result = "PASS" ;
-        }else {
+        if (checkPass()) {
+            this.result = "PASS";
+        } else {
             this.result = "FAIL";
         }
         return this.result;
     }
-    //4.getResult() — ดึงค่าผลลัพธ์
-    public String getResult(){return result;}
 
-    // --Getters & Setters--
-    public int getCorrectCount(){return correctCount;}
-    public void setCorrectCount(int correctCount){
+    public int getEndingBadgeResId(String endingType) {
+        if ("SPECIAL".equalsIgnoreCase(endingType) || "TRUE".equalsIgnoreCase(endingType)) {
+            return R.drawable.ic_special_ending_badge;
+        } else {
+            return R.drawable.ic_normal_ending_badge;
+        }
+    }
+
+    public String formatTime(String time) {
+        return time != null ? time : "00:00";
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public int getCorrectCount() {
+        return correctCount;
+    }
+
+    public void setCorrectCount(int correctCount) {
         this.correctCount = correctCount;
     }
-    public int getTotalQuestion(){return totalQuestion;}
-    public void setTotalQuestion(int totalQuestion){
+
+    public int getTotalQuestion() {
+        return totalQuestion;
+    }
+
+    public void setTotalQuestion(int totalQuestion) {
         this.totalQuestion = totalQuestion;
     }
 }

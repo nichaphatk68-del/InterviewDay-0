@@ -1,46 +1,85 @@
 package com.example.interviewday.controllers;
 
-public class LevelController{
+import com.example.interviewday.models.Level;
+import com.example.interviewday.models.Level1;
+import com.example.interviewday.models.Level2;
+import com.example.interviewday.models.Level3;
+
+public class LevelController {
     // --Attributes--
     private int currentStage;
     private int unlockedStage;
+    private Level currentLevelModel;
 
     // --Constructor--
-    public LevelController(){
+    public LevelController() {
         this.currentStage = 1;
         this.unlockedStage = 1;
+        loadLevelModel(1);
     }
 
-    // --Methods--
-    //1.electStage(int stage) — เลือกด่านที่จะเล่น
-    public void selectStage(int stage){
-        if (checkStageUnlock(stage)){
-            this.currentStage = stage;
+    public LevelController(int stageNumber) {
+        this.currentStage = stageNumber;
+        this.unlockedStage = 1;
+        loadLevelModel(stageNumber);
+    }
+
+    public void loadLevelModel(int stageNumber) {
+        this.currentStage = stageNumber;
+        switch (stageNumber) {
+            case 2:
+                this.currentLevelModel = new Level2();
+                break;
+            case 3:
+                this.currentLevelModel = new Level3();
+                break;
+            case 1:
+            default:
+                this.currentLevelModel = new Level1();
+                break;
         }
     }
-    //2.startStage(int stage) — เริ่มเล่นด่านที่ระบุ
-    public void startStage(int stage){
-        if (checkStageUnlock(stage)){
+
+    public Level getCurrentLevelModel() {
+        if (currentLevelModel == null) {
+            loadLevelModel(currentStage);
+        }
+        return currentLevelModel;
+    }
+
+    public void selectStage(int stage) {
+        if (checkStageUnlock(stage)) {
             this.currentStage = stage;
+            loadLevelModel(stage);
         }
     }
-    //3.unlockNextStage() — ปลดล็อกด่านถัดไป (เรียกใช้เมื่อเล่นผ่านด่าน)
-    public void unlockNextStage(){
-        if (unlockedStage <3){ // สมมติว่าเกมเรามีสูงสุด 3 ด่าน
+
+    public void startStage(int stage) {
+        if (checkStageUnlock(stage)) {
+            this.currentStage = stage;
+            loadLevelModel(stage);
+        }
+    }
+
+    public void unlockNextStage() {
+        if (unlockedStage < 3) {
             unlockedStage++;
         }
     }
-    //4.checkStageUnlock(int stage) — เช็กว่าด่านนี้ปลดล็อกแล้วหรือยัง
-    public boolean checkStageUnlock(int stage){
+
+    public boolean checkStageUnlock(int stage) {
         return stage <= unlockedStage;
     }
 
-    // --Getters--
-    public int getCurrentStage(){
+    public int getCurrentStage() {
         return currentStage;
     }
 
     public int getUnlockedStage() {
         return unlockedStage;
+    }
+
+    public void setUnlockedStage(int unlockedStage) {
+        this.unlockedStage = unlockedStage;
     }
 }

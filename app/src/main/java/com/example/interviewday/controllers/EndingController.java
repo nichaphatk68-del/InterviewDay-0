@@ -1,46 +1,92 @@
 package com.example.interviewday.controllers;
 
-public class EndingController {
-    // --Attributes--
-    private String endingType;//— ประเภทฉากจบ (เช่น "NORMAL_ENDING", "TRUE_ENDING")
-    private int secretItemCount;// — จำนวนไอเท็มลับที่ผู้เล่นเก็บได้ทั้งหมด (0-3 ชิ้น)
-    private boolean sideQuestCompleted;//— สถานะการทำเควสย่อยสำเร็จหรือไม่
+import com.example.interviewday.models.Ending;
+import com.example.interviewday.models.FailedEnding;
+import com.example.interviewday.models.NormalEnding;
+import com.example.interviewday.models.TrueEnding;
 
-    // --Constructor--
-    public EndingController(){
-        this.endingType = "NORMAL_ENDING";
+public class EndingController {
+    private Ending currentEnding;
+    private String endingType;
+    private int secretItemCount;
+    private boolean sideQuestCompleted;
+
+    public EndingController() {
+        this.endingType = "NORMAL";
         this.secretItemCount = 0;
         this.sideQuestCompleted = false;
+        loadEndingModel(endingType);
     }
 
-    // --Methods--
-    //1.calculateEnding() — คำนวณฉากจบจากเงื่อนไข(ถ้าเก็บไอเท็มลับครบ 3 ชิ้น (และทำเควสผ่าน) จะได้ "TRUE_ENDING" นอกเหนือจากนั้นได้ "NORMAL_ENDING")
-    public void calculateEnding(){
-        if (secretItemCount >=3) {
-            this.endingType = "TRUE_ENDING";
-        }else{
-            this.endingType = "NORMAL_ENDING";
+    public EndingController(String endingType) {
+        if (endingType == null) {
+            endingType = "NORMAL";
+        }
+        this.endingType = endingType;
+        loadEndingModel(endingType);
+    }
+
+    public void loadEndingModel(String endingType) {
+        if (endingType == null) endingType = "NORMAL";
+        this.endingType = endingType.toUpperCase();
+        switch (this.endingType) {
+            case "SPECIAL":
+            case "TRUE":
+            case "TRUE_ENDING":
+                this.currentEnding = new TrueEnding(2);
+                break;
+            case "FAILED":
+            case "FAILED_ENDING":
+                this.currentEnding = new FailedEnding(3);
+                break;
+            case "NORMAL":
+            case "NORMAL_ENDING":
+            default:
+                this.currentEnding = new NormalEnding(1);
+                break;
         }
     }
-    //2.checkEndingCondition(int secretItems, boolean sideQuest) — ตรวจสอบและอัปเดตเงื่อนไขฉากจบ
-    public boolean checkEndingCondition(int secretItems, boolean sideQuest){
-        this.secretItemCount = secretItems;
-        this.sideQuestCompleted =sideQuest;
-        calculateEnding();
-        return endingType.equals("TRUE_ENDING");
-    }
-    //3.electEnding(String endingType) — เลือกประเภทฉากจบโดยตรง
-    public void selectEnding(String endingType){
-        this.endingType = endingType;
-    }
-    //4.getEndingType() — ดึงค่าประเภทฉากจบปัจจุบัน
-    public String getEndingType(){return endingType;}
 
-    // --Getters & Setters--
-    public int getSecretItemCount() { return secretItemCount; }
+    public Ending getCurrentEnding() {
+        if (currentEnding == null) {
+            loadEndingModel(endingType);
+        }
+        return currentEnding;
+    }
+
+    public void calculateEnding() {
+        if (secretItemCount >= 3) {
+            this.endingType = "SPECIAL";
+        } else {
+            this.endingType = "NORMAL";
+        }
+        loadEndingModel(this.endingType);
+    }
+
+    public boolean checkEndingCondition(int secretItems, boolean sideQuest) {
+        this.secretItemCount = secretItems;
+        this.sideQuestCompleted = sideQuest;
+        calculateEnding();
+        return "SPECIAL".equals(endingType);
+    }
+
+    public String getEndingType() {
+        return endingType;
+    }
+
+    public int getSecretItemCount() {
+        return secretItemCount;
+    }
+
     public void setSecretItemCount(int secretItemCount) {
-        this.secretItemCount = secretItemCount; }
-    public boolean isSideQuestCompleted() { return sideQuestCompleted; }
+        this.secretItemCount = secretItemCount;
+    }
+
+    public boolean isSideQuestCompleted() {
+        return sideQuestCompleted;
+    }
+
     public void setSideQuestCompleted(boolean sideQuestCompleted) {
-        this.sideQuestCompleted = sideQuestCompleted; }
+        this.sideQuestCompleted = sideQuestCompleted;
+    }
 }

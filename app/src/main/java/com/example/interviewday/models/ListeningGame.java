@@ -13,8 +13,17 @@ public class ListeningGame extends MiniGame {
         this.correctTranscript = correctTranscript;
     }
 
+    public String getCorrectTranscript() {
+        return correctTranscript;
+    }
+
+    public void setCorrectTranscript(String correctTranscript) {
+        this.correctTranscript = correctTranscript;
+    }
+
     @Override
     public boolean checkAnswer(String playerInput) {
+        if (playerInput == null || correctTranscript == null) return false;
         boolean isCorrect = playerInput.trim().equalsIgnoreCase(correctTranscript.trim());
         System.out.println("[Listening] ตรวจคำตอบจากการฟัง: " + (isCorrect ? "ถูกต้อง" : "ผิด"));
         return isCorrect;

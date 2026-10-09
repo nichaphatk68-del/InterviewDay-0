@@ -4,18 +4,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import com.example.interviewday.R;
-
 import com.example.interviewday.dialogs.SettingsDialog;
 
+/**
+ * คลาส MainMenuActivity
+ * หน้าที่: หน้าเมนูหลักของเกม ให้ผู้เล่นเลือกเข้าสู่หน้าเลือกด่าน, วิธีเล่น, สมุดโน้ต หรือป๊อปอัพตั้งค่า
+ */
 public class MainMenuActivity extends BaseActivity {
 
-    //ATTRIBUTES
+    // ===== Attributes: UI Buttons =====
     private ImageButton btnSettings;     // ปุ่มตั้งค่า
     private ImageButton btnSelectLevel;  // ปุ่มเลือกด่าน
     private ImageButton btnHowToPlay;   // ปุ่มวิธีเล่น
     private ImageButton btnNotes;       // ปุ่มสมุดโน้ต
 
-    //METHODS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +58,7 @@ public class MainMenuActivity extends BaseActivity {
             startActivity(intent);
         });
 
-        // กดปุ่มตั้งค่า -> เปิดป๊อปอัพตั้งค่า
+        // กดปุ่มตั้งค่า -> เปิดป๊อปอัพตั้งค่า SettingsDialog
         btnSettings.setOnClickListener(v -> {
             SettingsDialog settingsDialog = SettingsDialog.newInstance();
             settingsDialog.show(getSupportFragmentManager(), "SettingsDialog");

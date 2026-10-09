@@ -12,7 +12,16 @@ public class SecretItem extends Item {
         this.secretDetails = secretDetails;
     }
 
+    public SecretItem(int itemID, String itemName, String description, String secretDetails, int colorResId, float biasX, float biasY) {
+        super(itemID, itemName, description, 0, colorResId, biasX, biasY);
+        this.secretDetails = secretDetails;
+    }
+
     public String getSecretDetails() {
         return secretDetails;
+    }
+
+    public void setSecretDetails(String secretDetails) {
+        this.secretDetails = secretDetails;
     }
 }

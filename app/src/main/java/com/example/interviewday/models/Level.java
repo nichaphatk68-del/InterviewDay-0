@@ -5,8 +5,7 @@ import java.util.List;
 
 /**
  * คลาสแม่: จัดเก็บข้อมูลพื้นฐานและสถานะของแต่ละด่าน
- * OOP: Abstraction (กำหนดโครงสร้างกลาง ไม่ลงรายละเอียดเนื้อหาด่านจริง)
- *      Encapsulation (status เป็น private/protected เข้าถึงผ่าน method เท่านั้น)
+ * OOP: Abstraction + Encapsulation
  */
 public abstract class Level {
     protected int levelID;
@@ -14,7 +13,10 @@ public abstract class Level {
     protected LevelStatus status;
     protected String introStory;
     protected String failStory;
+    protected int storyBgResId;
+    protected int gameBgResId;
     protected List<Item> requiredItems = new ArrayList<>();
+    protected SecretItem secretItem;
     protected Time timer = new Time();
 
     public Level(int levelID, String levelName) {
@@ -23,10 +25,8 @@ public abstract class Level {
         this.status = LevelStatus.LOCKED;
     }
 
-    // ลูกต้อง implement เอง ว่าโหลดเนื้อหาด่านของตัวเองอย่างไร
     public abstract void loadContent();
 
-    // ลูกเรียกใน constructor ของตัวเองเพื่อกำหนดเนื้อเรื่องของด่าน
     protected void setStory(String introStory, String failStory) {
         this.introStory = introStory;
         this.failStory = failStory;
@@ -40,7 +40,22 @@ public abstract class Level {
         return failStory;
     }
 
-    // ลูกเรียกใน constructor ของตัวเองเพื่อกำหนดไอเทมที่ต้องหาให้ครบในด่านนี้
+    public int getStoryBgResId() {
+        return storyBgResId;
+    }
+
+    public void setStoryBgResId(int storyBgResId) {
+        this.storyBgResId = storyBgResId;
+    }
+
+    public int getGameBgResId() {
+        return gameBgResId;
+    }
+
+    public void setGameBgResId(int gameBgResId) {
+        this.gameBgResId = gameBgResId;
+    }
+
     protected void addRequiredItem(Item item) {
         requiredItems.add(item);
     }
@@ -49,7 +64,14 @@ public abstract class Level {
         return requiredItems;
     }
 
-    // เช็คว่าไอเทมที่ต้องหาในด่านนี้ถูกเก็บครบหรือยัง
+    public SecretItem getSecretItem() {
+        return secretItem;
+    }
+
+    public void setSecretItem(SecretItem secretItem) {
+        this.secretItem = secretItem;
+    }
+
     public boolean isAllItemsFound() {
         for (Item item : requiredItems) {
             if (!item.isCollected()) {
@@ -63,14 +85,11 @@ public abstract class Level {
         return timer;
     }
 
-    // เรียกเมื่อผู้เล่นทำภารกิจ/มินิเกมของด่านไม่สำเร็จ
     public void triggerFail() {
         System.out.println(levelName + " : ผู้เล่นล้มเหลวในด่านนี้");
         System.out.println("เนื้อเรื่อง: " + failStory);
     }
 
-    // เรียกเป็นระยะระหว่างเล่น (เช่นทุก 1 วินาที) เพื่อเดินเวลาถอยหลังของด่าน
-    // ถ้าหมดเวลาแล้วยังหาไอเทมไม่ครบ -> แพ้ด่านทันที (triggerFail())
     public boolean updateTime(int elapsedSeconds) {
         timer.decreaseTime(elapsedSeconds);
         if (timer.isTimeUp() && !isAllItemsFound()) {
@@ -104,6 +123,10 @@ public abstract class Level {
 
     public LevelStatus getStatus() {
         return status;
+    }
+
+    public void setStatus(LevelStatus status) {
+        this.status = status;
     }
 
     public int getLevelID() {

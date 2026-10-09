@@ -4,33 +4,42 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import com.example.interviewday.R;
+import com.example.interviewday.controllers.LevelController;
 
+/**
+ * คลาส StageSelectionActivity (View ตามหลัก MVC)
+ * หน้าที่: หน้าเลือกด่าน (Stage 1, Stage 2, Stage 3)
+ * หลักการ MVC: ตรวจสอบสถานะการปลดล็อกด่านจาก LevelModel ผ่าน LevelController
+ */
 public class StageSelectionActivity extends BaseActivity {
 
-    //ATTRIBUTES
+    // ===== Attributes: UI Views =====
     private ImageButton btnHome;    // ปุ่มย้อนกลับหน้าหลัก
     private ImageButton btnLevel1;  // ปุ่มเลือกด่าน 1
     private ImageButton btnLevel2;  // ปุ่มเลือกด่าน 2
     private ImageButton btnLevel3;  // ปุ่มเลือกด่าน 3
 
-    // ตัวแปรเก็บสถานะการปลดล็อกด่าน
-    private boolean isLevel2Unlocked = false;
-    private boolean isLevel3Unlocked = false;
+    // ===== Attribute: Controller (MVC) =====
+    private LevelController levelController; // Controller สำหรับควบคุมสถานะและการเลือกด่าน
 
-    //METHODS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stage_selection);
 
-        // 1. ผูก View ใน XML เข้ากับ Attribute
-        initViews();
+        // สร้าง Controller
+        levelController = new LevelController();
 
-        // 2. ตั้งค่า Event ปุ่มกด
+        initViews();
         setupListeners();
     }
 
-    // เมธอดผูกองค์ประกอบ UI จากไฟล์ XML
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateStageStatusUI(); // อัปเดตสถานะปุ่มปลดล็อกด่านเมื่อกลับมาหน้านี้
+    }
+
     private void initViews() {
         btnHome = findViewById(R.id.btnHome);
         btnLevel1 = findViewById(R.id.btnLevel1);
@@ -38,56 +47,45 @@ public class StageSelectionActivity extends BaseActivity {
         btnLevel3 = findViewById(R.id.btnLevel3);
     }
 
-    // เมธอดจัดการ Event การคลิกปุ่ม
     private void setupListeners() {
-        // กดปุ่ม Home -> ปิดหน้านี้แล้วย้อนกลับไปหน้า MainMenuActivity
         btnHome.setOnClickListener(v -> finish());
 
-        // กดปุ่ม Level 1 -> เข้าสู่ gameplay ด่าน 1
+        // ปุ่มด่าน 1: เช็กสถานะการปลดล็อกผ่าน Controller
         btnLevel1.setOnClickListener(v -> {
-            openGameStage(1);
+            if (levelController.checkStageUnlock(1)) {
+                openGameStage(1);
+            }
         });
 
-        // กดปุ่ม Level 2 -> เข้าสู่ gameplay ด่าน 2 (ถ้าปลดล็อกแล้ว)
+        // ปุ่มด่าน 2: เช็กสถานะการปลดล็อกผ่าน Controller
         btnLevel2.setOnClickListener(v -> {
-            if (isLevel2Unlocked) {
+            if (levelController.checkStageUnlock(2)) {
                 openGameStage(2);
             }
         });
 
-        // กดปุ่ม Level 3 -> เข้าสู่ gameplay ด่าน 3 (ถ้าปลดล็อกแล้ว)
+        // ปุ่มด่าน 3: เช็กสถานะการปลดล็อกผ่าน Controller
         btnLevel3.setOnClickListener(v -> {
-            if (isLevel3Unlocked) {
+            if (levelController.checkStageUnlock(3)) {
                 openGameStage(3);
             }
         });
     }
 
-    // เมธอดสำหรับเปลี่ยนหน้าไปยัง StoryActivity ตามหมายเลขด่าน
+    // สั่งเปิดหน้าเล่าเนื้อเรื่องประจำด่าน
     private void openGameStage(int stageNumber) {
-
+        levelController.selectStage(stageNumber);
         Intent intent = new Intent(StageSelectionActivity.this, StoryActivity.class);
         intent.putExtra("STAGE_NUMBER", stageNumber);
         startActivity(intent);
     }
 
-    // เมธอดสำหรับให้ Controller เรียกใช้เพื่อสั่งอัปเดตการปลดล็อกด่านบนหน้าจอ
-    public void updateStageStatus(boolean level2Unlocked, boolean level3Unlocked) {
-        this.isLevel2Unlocked = level2Unlocked;
-        this.isLevel3Unlocked = level3Unlocked;
+    // อัปเดตรูปภาพปุ่มเลือกด่านตามสถานะการปลดล็อกที่ได้รับจาก LevelController
+    public void updateStageStatusUI() {
+        boolean level2Unlocked = levelController.checkStageUnlock(2);
+        boolean level3Unlocked = levelController.checkStageUnlock(3);
 
-        // อัปเดตรูปภาพปุ่ม Level 2
-        if (isLevel2Unlocked) {
-            btnLevel2.setImageResource(R.drawable.btn_level_2);
-        } else {
-            btnLevel2.setImageResource(R.drawable.btn_level_locked);
-        }
-
-        // อัปเดตรูปภาพปุ่ม Level 3
-        if (isLevel3Unlocked) {
-            btnLevel3.setImageResource(R.drawable.btn_level_3);
-        } else {
-            btnLevel3.setImageResource(R.drawable.btn_level_locked);
-        }
+        btnLevel2.setImageResource(level2Unlocked ? R.drawable.btn_level_2 : R.drawable.btn_level_locked);
+        btnLevel3.setImageResource(level3Unlocked ? R.drawable.btn_level_3 : R.drawable.btn_level_locked);
     }
 }

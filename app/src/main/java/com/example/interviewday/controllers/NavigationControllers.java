@@ -6,6 +6,7 @@ import android.app.Activity;
 import com.example.interviewday.activities.MainMenuActivity;
 import com.example.interviewday.activities.StageSelectionActivity;
 import com.example.interviewday.activities.GameStageActivity;
+
 public class NavigationControllers {
     // --Attributes--
     private String currentScreen;
@@ -17,6 +18,7 @@ public class NavigationControllers {
         this.currentScreen = "MainMenu";
         this.previousScreen = "";
     }
+
     public NavigationControllers(Context context){
         this.context = context;
         this.currentScreen = "MainMenu";
@@ -24,7 +26,6 @@ public class NavigationControllers {
     }
 
     // --Methods--
-    //1.goToMainMenu() — เปิดหน้าเมนูหลัก (MainMenuActivity)
     public void goToMainMenu(){
         this.previousScreen = currentScreen;
         this.currentScreen = "MainMenu";
@@ -34,7 +35,7 @@ public class NavigationControllers {
             context.startActivity(intent);
         }
     }
-    //2.goToStageSelect() — เปิดหน้าเลือกด่าน (StageSelectionActivity)
+
     public void goToStageSelect(){
         this.previousScreen = currentScreen;
         this.currentScreen = "StageSelect";
@@ -44,27 +45,29 @@ public class NavigationControllers {
             context.startActivity(intent);
         }
     }
-    //3.goToGameStage(int stageNumber) — เปิดหน้าเล่นเกมตามด่านที่ส่งมา (GameStageActivity)
+
     public void goToGameStage(int stageNumber){
         this.previousScreen = currentScreen;
         this.currentScreen = "GameStage";
 
         if (context != null){
-            Intent intent = new Intent(context, GameController.class);
+            Intent intent = new Intent(context, GameStageActivity.class);
             intent.putExtra("STAGE_NUMBER", stageNumber);
             context.startActivity(intent);
         }
     }
-    //4.goBack() — ปิดหน้าปัจจุบันเพื่อย้อนกลับไปหน้าก่อนหน้า
+
     public void goBack() {
         if (context instanceof Activity){
             ((Activity) context).finish();
         }
     }
 
-    // --Getters--
+    // --Getters & Setters--
     public String getCurrentScreen(){return currentScreen;}
+    public void setCurrentScreen(String currentScreen){this.currentScreen = currentScreen;}
     public String getPreviousScreen(){return previousScreen;}
+    public void setPreviousScreen(String previousScreen){this.previousScreen = previousScreen;}
+    public Context getContext() {return context;}
     public void setContext(Context context) {this.context = context;}
-
 }

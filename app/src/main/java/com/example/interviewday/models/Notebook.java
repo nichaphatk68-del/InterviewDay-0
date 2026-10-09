@@ -31,6 +31,10 @@ public class Notebook {
         return stories;
     }
 
+    public void setStories(List<String> stories) {
+        this.stories = stories;
+    }
+
     // ===== Item =====
 
     public void addDiscoveredItem(String itemName) {
@@ -41,6 +45,10 @@ public class Notebook {
 
     public List<String> getDiscoveredItems() {
         return discoveredItems;
+    }
+
+    public void setDiscoveredItems(List<String> discoveredItems) {
+        this.discoveredItems = discoveredItems;
     }
 
     // ===== Vocabulary =====
@@ -55,6 +63,10 @@ public class Notebook {
         return vocabulary;
     }
 
+    public void setVocabulary(List<String> vocabulary) {
+        this.vocabulary = vocabulary;
+    }
+
     // ===== Note =====
 
     public void addNote(String note) {
@@ -63,6 +75,10 @@ public class Notebook {
 
     public List<String> getNotes() {
         return notes;
+    }
+
+    public void setNotes(List<String> notes) {
+        this.notes = notes;
     }
 
     // ===== Clear Notebook =====

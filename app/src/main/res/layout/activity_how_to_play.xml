@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- 1. ภาพพื้นหลังฉากห้องและสมุดเปิด -->
+    <!-- 1. ภาพพื้นหลังห้อง สมุดเปิด และข้อความกติกา -->
     <ImageView
         android:id="@+id/imgBackground"
         android:layout_width="0dp"
@@ -18,28 +18,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- 2. ป้ายชื่อ HOW TO PLAY (ตรงกลางด้านบน) -->
-
-    <!-- 3. ปุ่มกลับหน้าโฮม (ไอคอนบ้าน มุมซ้ายล่าง) -->
-
+    <!-- 2. ป้ายชื่อ HOW TO PLAY (อยู่ตรงกลางด้านบน) -->
     <ImageView
         android:id="@+id/imgLogoHowToPlay"
-        android:layout_width="296dp"
-        android:layout_height="115dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="309dp"
+        android:layout_height="77dp"
+        android:layout_marginTop="8dp"
         android:scaleType="fitCenter"
         android:src="@drawable/img_logo_how_to_play"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- 3. ปุ่มกลับหน้าโฮม (ปุ่มบ้าน อยู่มุมซ้ายล่าง) -->
     <ImageButton
         android:id="@+id/btnHome"
-        android:layout_width="123dp"
-        android:layout_height="66dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="4dp"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/btn_home"

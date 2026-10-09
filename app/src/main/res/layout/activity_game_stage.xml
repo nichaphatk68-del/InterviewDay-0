@@ -7,6 +7,11 @@
     android:layout_height="match_parent">
 
     <!-- 1. ภาพฉากหลังหลัก (Full Screen) -->
+
+    <!-- =================================================== -->
+    <!-- 🎯 2. ไอเท็มธรรมดาที่ต้องตามหาในฉาก (3 ชิ้น) -->
+    <!-- =================================================== -->
+
     <ImageView
         android:id="@+id/imgBackground"
         android:layout_width="0dp"
@@ -15,12 +20,11 @@
         android:src="@drawable/bg_game_stage1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <!-- =================================================== -->
-    <!-- 🎯 2. ไอเท็มธรรมดาที่ต้องตามหาในฉาก (3 ชิ้น) -->
-    <!-- =================================================== -->
     <ImageView
         android:id="@+id/imgHiddenItem1"
         android:layout_width="50dp"
@@ -104,36 +108,46 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- 6. แถบ Quest ไอเท็ม (มุมซ้ายล่าง) -->
+
+    <!-- 7. ปุ่ม Next สีเขียว (มุมขวาล่าง) -->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutQuest"
         android:layout_width="175dp"
         android:layout_height="65dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="16dp"
         android:background="@drawable/bg_quest_panel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.059"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.953">
 
         <ImageView
             android:id="@+id/imgQuestItem1"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="12dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imgQuestItem2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/imgQuestItem2"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/imgQuestItem3"
+            app:layout_constraintHorizontal_bias="0.764"
             app:layout_constraintStart_toEndOf="@id/imgQuestItem1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
@@ -142,16 +156,23 @@
             android:id="@+id/imgQuestItem3"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imgQuestItem2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintGuide_begin="-2dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- 7. ปุ่ม Next สีเขียว (มุมขวาล่าง) -->
     <ImageButton
         android:id="@+id/btnNext"
         android:layout_width="64dp"
