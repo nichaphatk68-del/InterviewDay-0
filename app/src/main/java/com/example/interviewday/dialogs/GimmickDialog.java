@@ -1,6 +1,7 @@
 package com.example.interviewday.dialogs;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -19,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.example.interviewday.R;
 import com.example.interviewday.controllers.GimmickController;
+import com.example.interviewday.controllers.NotebookController;
 
 import java.util.ArrayList;
 
@@ -169,6 +171,10 @@ public class GimmickDialog extends BaseDialog {
         boolean isCorrect = gimmickController.checkAnswer(recognizedText);
 
         if (isCorrect) {
+            // บันทึกคำศัพท์ลงในสมุดโน้ตเฉพาะเมื่อตอบคำถามถูกต้อง!
+            String vocab = gimmickController.getVocabularyForCurrentQuestion();
+            NotebookController.addUnlockedVocabulary(vocab);
+
             // กรณีพูดถูกต้อง: แสดง Toast ชื่นชม และปลดล็อกปุ่ม "ถัดไป"
             if (getContext() != null) {
                 Toast.makeText(getContext(), "Well done! That's the correct answer. (" + recognizedText + ")", Toast.LENGTH_SHORT).show();
@@ -215,5 +221,13 @@ public class GimmickDialog extends BaseDialog {
     // Getter สำหรับ Controller
     public GimmickController getGimmickController() {
         return gimmickController;
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (getActivity() instanceof com.example.interviewday.activities.GameStageActivity) {
+            ((com.example.interviewday.activities.GameStageActivity) getActivity()).resumeGameStage();
+        }
     }
 }

@@ -20,6 +20,8 @@ public class AudioController {
     //1.playSentenceAudio() — เล่นเสียงอ่านประโยคภาษาอังกฤษ
     // เล่นเสียงอ่านประโยคเมื่อกดปุ่ม
     public void playSentenceAudio(Context context, int soundResId) {
+        SettingsController settingsController = new SettingsController();
+        if (!settingsController.isSfxOn() || settingsController.getSfxVolume() <= 0) return;
         if (isMuted) return;
 
         // หยุดเสียงเดิมที่กำลังเล่นอยู่ก่อนหน้า
@@ -28,7 +30,8 @@ public class AudioController {
         // สร้าง MediaPlayer ตัวใหม่และเริ่มเล่นเสียงทันที
         mediaPlayer = MediaPlayer.create(context, soundResId);
         if (mediaPlayer != null) {
-            mediaPlayer.setVolume(volume, volume);
+            float vol = settingsController.getSfxVolume() / 100.0f;
+            mediaPlayer.setVolume(vol, vol);
             mediaPlayer.start();
 
             // คืนหน่วยความจำเมื่อเล่นเสียงจบ
@@ -49,18 +52,21 @@ public class AudioController {
     }
     //2.playCorrectSound() — เล่นเสียงเอฟเฟกต์ตอบถูก
     public void playCorrectSound(){
+        SettingsController settingsController = new SettingsController();
+        if (!settingsController.isSfxOn() || settingsController.getSfxVolume() <= 0) return;
         if (isMuted) return;
         // โค้ดสำหรับเล่นเสียงเอฟเฟกต์เมื่อตอบถูกต้อง
     }
     //3.playWrongSound() — เล่นเสียงเอฟเฟกต์ตอบผิด
     public void playWrongSound(){
+        SettingsController settingsController = new SettingsController();
+        if (!settingsController.isSfxOn() || settingsController.getSfxVolume() <= 0) return;
         if (isMuted) return;
         // โค้ดสำหรับเล่นเสียงเอฟเฟกต์เมื่อตอบผิด
     }
     //4.playBackgroundMusic() — เล่นเพลงประกอบฉาก
     public void playBackgroundMusic(){
-        if (isMuted) return;
-        // โค้ดสำหรับเล่นเพลง BGM ในฉาก
+        // Handled by BackgroundMusicManager
     }
     //5.setVolume(float volume) — ตั้งระดับความดังเสียง
     public void setVolume(float volume){

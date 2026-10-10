@@ -1,5 +1,6 @@
 package com.example.interviewday.dialogs;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.SeekBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.example.interviewday.R;
+import com.example.interviewday.controllers.BackgroundMusicManager;
 import com.example.interviewday.controllers.SettingsController;
 
 /**
@@ -29,6 +31,13 @@ public class SettingsDialog extends BaseDialog {
 
     private SettingsDialogListener listener;
     private SettingsController settingsController; // Controller จัดการการตั้งค่า
+
+    private ImageButton btnSfxOn;
+    private ImageButton btnSfxOff;
+    private ImageButton btnBgmOn;
+    private ImageButton btnBgmOff;
+    private SeekBar seekbarSfx;
+    private SeekBar seekbarBgm;
 
     public static SettingsDialog newInstance() {
         return new SettingsDialog();
@@ -58,12 +67,12 @@ public class SettingsDialog extends BaseDialog {
         }
 
         // ผูก View
-        ImageButton btnSfxOn = view.findViewById(R.id.btnSfxOn);
-        ImageButton btnSfxOff = view.findViewById(R.id.btnSfxOff);
-        ImageButton btnBgmOn = view.findViewById(R.id.btnBgmOn);
-        ImageButton btnBgmOff = view.findViewById(R.id.btnBgmOff);
-        SeekBar seekbarSfx = view.findViewById(R.id.seekbarSfx);
-        SeekBar seekbarBgm = view.findViewById(R.id.seekbarBgm);
+        btnSfxOn = view.findViewById(R.id.btnSfxOn);
+        btnSfxOff = view.findViewById(R.id.btnSfxOff);
+        btnBgmOn = view.findViewById(R.id.btnBgmOn);
+        btnBgmOff = view.findViewById(R.id.btnBgmOff);
+        seekbarSfx = view.findViewById(R.id.seekbarSfx);
+        seekbarBgm = view.findViewById(R.id.seekbarBgm);
         ImageButton btnCancel = view.findViewById(R.id.btnCancel);
         ImageButton btnOk = view.findViewById(R.id.btnOk);
 
@@ -71,49 +80,106 @@ public class SettingsDialog extends BaseDialog {
         if (settingsController != null) {
             seekbarSfx.setProgress(settingsController.getSfxVolume());
             seekbarBgm.setProgress(settingsController.getBgmVolume());
+            updateSfxButtonsUI(settingsController.isSfxOn());
+            updateBgmButtonsUI(settingsController.isBgmOn());
         }
 
         // สลับสถานะเปิด/ปิด SFX
         btnSfxOn.setOnClickListener(v -> {
             if (settingsController != null) settingsController.setSfxOn(true);
+            updateSfxButtonsUI(true);
+            applyAndSave();
         });
         btnSfxOff.setOnClickListener(v -> {
             if (settingsController != null) settingsController.setSfxOn(false);
+            updateSfxButtonsUI(false);
+            applyAndSave();
         });
 
         // สลับสถานะเปิด/ปิด BGM
         btnBgmOn.setOnClickListener(v -> {
             if (settingsController != null) settingsController.setBgmOn(true);
+            updateBgmButtonsUI(true);
+            applyAndSave();
         });
         btnBgmOff.setOnClickListener(v -> {
             if (settingsController != null) settingsController.setBgmOn(false);
+            updateBgmButtonsUI(false);
+            applyAndSave();
+        });
+
+        // ติดตามการเลื่อน SeekBar
+        seekbarSfx.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) applyAndSave();
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        seekbarBgm.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) applyAndSave();
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
         // ปุ่มยกเลิก
         btnCancel.setOnClickListener(v -> {
+            applyAndSave();
             if (listener != null) listener.onCancelSettings();
             dismiss();
         });
 
         // ปุ่มตกลง/บันทึกการตั้งค่า
         btnOk.setOnClickListener(v -> {
-            boolean sfxOn = settingsController != null && settingsController.isSfxOn();
-            boolean bgmOn = settingsController != null && settingsController.isBgmOn();
-            int sfxVol = seekbarSfx.getProgress();
-            int bgmVol = seekbarBgm.getProgress();
-
-            // บันทึกลง Model ผ่าน Controller
-            if (settingsController != null) {
-                settingsController.saveSettings(sfxOn, sfxVol, bgmOn, bgmVol);
-            }
-
+            applyAndSave();
             if (listener != null) {
+                boolean sfxOn = settingsController != null && settingsController.isSfxOn();
+                boolean bgmOn = settingsController != null && settingsController.isBgmOn();
+                int sfxVol = seekbarSfx.getProgress();
+                int bgmVol = seekbarBgm.getProgress();
                 listener.onSaveSettings(sfxOn, sfxVol, bgmOn, bgmVol);
             }
             dismiss();
         });
 
         return view;
+    }
+
+    private void updateSfxButtonsUI(boolean isOn) {
+        if (btnSfxOn != null && btnSfxOff != null) {
+            btnSfxOn.setAlpha(isOn ? 1.0f : 0.4f);
+            btnSfxOff.setAlpha(isOn ? 0.4f : 1.0f);
+        }
+    }
+
+    private void updateBgmButtonsUI(boolean isOn) {
+        if (btnBgmOn != null && btnBgmOff != null) {
+            btnBgmOn.setAlpha(isOn ? 1.0f : 0.4f);
+            btnBgmOff.setAlpha(isOn ? 0.4f : 1.0f);
+        }
+    }
+
+    private void applyAndSave() {
+        if (settingsController != null && seekbarSfx != null && seekbarBgm != null) {
+            boolean sfxOn = settingsController.isSfxOn();
+            boolean bgmOn = settingsController.isBgmOn();
+            int sfxVol = seekbarSfx.getProgress();
+            int bgmVol = seekbarBgm.getProgress();
+
+            settingsController.saveSettings(sfxOn, sfxVol, bgmOn, bgmVol);
+            BackgroundMusicManager.setBgmState(bgmOn, bgmVol);
+        }
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        applyAndSave();
     }
 
     public SettingsController getSettingsController() {

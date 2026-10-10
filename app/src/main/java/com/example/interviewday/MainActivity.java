@@ -17,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // เริ่มเล่นเพลงพื้นหลัง bg_music.mp3 ตั้งแต่เข้าเกม
+        com.example.interviewday.controllers.BackgroundMusicManager.start(getApplicationContext());
         
         // 1. สร้าง Intent เพื่อสลับหน้าไปยัง StartGameActivity
         Intent intent = new Intent(MainActivity.this, StartGameActivity.class);

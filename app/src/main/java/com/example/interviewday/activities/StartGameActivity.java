@@ -14,6 +14,9 @@ public class StartGameActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_game);
 
+        // เริ่มเล่นเพลงพื้นหลัง bg_music.mp3
+        com.example.interviewday.controllers.BackgroundMusicManager.start(this);
+
         // ดึงปุ่มจาก XML มาใส่ Attribute
         btnStartGame = findViewById(R.id.btnStartGame);
 

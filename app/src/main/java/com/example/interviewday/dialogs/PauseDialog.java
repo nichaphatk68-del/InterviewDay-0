@@ -1,5 +1,6 @@
 package com.example.interviewday.dialogs;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -91,5 +92,13 @@ public class PauseDialog extends BaseDialog {
         });
 
         return view;
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (getActivity() instanceof com.example.interviewday.activities.GameStageActivity) {
+            ((com.example.interviewday.activities.GameStageActivity) getActivity()).resumeGameStage();
+        }
     }
 }

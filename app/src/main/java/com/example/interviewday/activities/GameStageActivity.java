@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.interviewday.R;
 import com.example.interviewday.controllers.GameStageController;
+import com.example.interviewday.controllers.LevelController;
+import com.example.interviewday.controllers.NotebookController;
 import com.example.interviewday.controllers.TimerController;
 import com.example.interviewday.dialogs.GimmickDialog;
 import com.example.interviewday.dialogs.PauseDialog;
@@ -135,6 +137,12 @@ public class GameStageActivity extends BaseActivity {
                 @Override
                 public void onFinish() {
                     updateTimerText("00:00");
+                    // เวลาหมด เปิดหน้า Failed ending ทันที
+                    Intent intent = new Intent(GameStageActivity.this, EndingActivity.class);
+                    intent.putExtra("ENDING_TYPE", "FAILED");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
                 }
             });
         }
@@ -165,12 +173,27 @@ public class GameStageActivity extends BaseActivity {
         }
     }
 
+    public void pauseGameStage() {
+        if (gameStageController != null) {
+            gameStageController.pauseStage();
+        }
+    }
+
+    public void resumeGameStage() {
+        if (gameStageController != null && !isFinishing() && !isDestroyed()) {
+            gameStageController.resumeStage();
+        }
+    }
+
     private void setupItemClickListeners() {
         btnPause.setOnClickListener(v -> {
+            pauseGameStage();
             PauseDialog dialog = PauseDialog.newInstance(tvTimer.getText().toString());
             dialog.setListener(new PauseDialog.PauseDialogListener() {
                 @Override
-                public void onContinueClicked() {}
+                public void onContinueClicked() {
+                    resumeGameStage();
+                }
 
                 @Override
                 public void onOpenSettingsClicked() {
@@ -195,9 +218,25 @@ public class GameStageActivity extends BaseActivity {
         });
 
         btnNext.setOnClickListener(v -> {
-            GimmickDialog dialog = new GimmickDialog();
-            dialog.setStageAndQuestion(gameStageController.getCurrentStage(), 0);
-            dialog.show(getSupportFragmentManager(), "GimmickDialog");
+            int currentStage = gameStageController.getCurrentStage();
+            // ปลดล็อกด่านถัดไปในระบบ
+            LevelController.unlockStage(currentStage + 1);
+
+            if (currentStage < 3) {
+                Intent intent = new Intent(GameStageActivity.this, StoryActivity.class);
+                intent.putExtra("STAGE_NUMBER", currentStage + 1);
+                startActivity(intent);
+                finish();
+            } else {
+                Intent intent = new Intent(GameStageActivity.this, SummaryActivity.class);
+                intent.putExtra("ENDING_TYPE", isSecretItemFound() ? "SPECIAL" : "NORMAL");
+                intent.putExtra("LEVEL1_TIME", "01:30");
+                intent.putExtra("LEVEL2_TIME", "02:15");
+                intent.putExtra("LEVEL3_TIME", "01:45");
+                intent.putExtra("TOTAL_TIME", "05:30");
+                startActivity(intent);
+                finish();
+            }
         });
 
         // 1. ไอเท็มธรรมดา ชิ้นที่ 1
@@ -205,7 +244,12 @@ public class GameStageActivity extends BaseActivity {
             imgHiddenItem1.setVisibility(View.GONE);
             imgQuestItem1.setImageResource(colorRes1);
             boolean allFound = gameStageController.collectNormalItem(0);
+            List<Item> items = gameStageController.getNormalItems();
+            if (items != null && items.size() > 0) {
+                NotebookController.addUnlockedDiscoveredItem(items.get(0).getItemName());
+            }
             if (allFound) {
+                LevelController.unlockStage(gameStageController.getCurrentStage() + 1);
                 btnNext.setVisibility(View.VISIBLE);
             }
         });
@@ -215,7 +259,12 @@ public class GameStageActivity extends BaseActivity {
             imgHiddenItem2.setVisibility(View.GONE);
             imgQuestItem2.setImageResource(colorRes2);
             boolean allFound = gameStageController.collectNormalItem(1);
+            List<Item> items = gameStageController.getNormalItems();
+            if (items != null && items.size() > 1) {
+                NotebookController.addUnlockedDiscoveredItem(items.get(1).getItemName());
+            }
             if (allFound) {
+                LevelController.unlockStage(gameStageController.getCurrentStage() + 1);
                 btnNext.setVisibility(View.VISIBLE);
             }
         });
@@ -225,16 +274,30 @@ public class GameStageActivity extends BaseActivity {
             imgHiddenItem3.setVisibility(View.GONE);
             imgQuestItem3.setImageResource(colorRes3);
             boolean allFound = gameStageController.collectNormalItem(2);
+            List<Item> items = gameStageController.getNormalItems();
+            if (items != null && items.size() > 2) {
+                NotebookController.addUnlockedDiscoveredItem(items.get(2).getItemName());
+            }
             if (allFound) {
+                LevelController.unlockStage(gameStageController.getCurrentStage() + 1);
                 btnNext.setVisibility(View.VISIBLE);
             }
         });
 
-        // 4. ไอเท็มลับประจำด่าน
+        // 4. ไอเท็มลับประจำด่าน (เปิด GimmickDialog เมื่อพบไอเท็มลับ)
         imgSecretItem.setOnClickListener(v -> {
             imgSecretItem.setVisibility(View.GONE);
             String secretName = gameStageController.collectSecretItem();
             Toast.makeText(this, "ปลดล็อกไอเท็มลับ: " + secretName, Toast.LENGTH_LONG).show();
+
+            NotebookController.addUnlockedDiscoveredItem(secretName);
+
+            pauseGameStage();
+
+            // เปิด GimmickDialog สำหรับตอบคำถามไอเท็มลับประจำด่าน
+            GimmickDialog dialog = new GimmickDialog();
+            dialog.setStageAndQuestion(gameStageController.getCurrentStage(), 0);
+            dialog.show(getSupportFragmentManager(), "GimmickDialog");
         });
     }
 

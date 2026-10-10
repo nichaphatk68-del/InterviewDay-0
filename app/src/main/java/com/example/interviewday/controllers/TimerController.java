@@ -18,7 +18,7 @@ public class TimerController {
 
     // --Constructor--
     public TimerController(){
-        this.timeLimit = 360; // 360 วินาที (6 นาที)
+        this.timeLimit = 180; // 180 วินาที (3 นาที)
         this.remainingTime = timeLimit;
         this.isRunning = false;
     }

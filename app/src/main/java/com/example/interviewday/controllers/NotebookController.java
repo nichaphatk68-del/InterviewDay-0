@@ -2,52 +2,67 @@ package com.example.interviewday.controllers;
 
 import com.example.interviewday.models.Notebook;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * คลาส NotebookController
  * หน้าที่: ควบคุมและจัดการข้อมูลสมุดโน้ต สรุปเนื้อหาคำศัพท์ และไอเท็มที่ค้นพบเพื่อส่งให้ NotebookActivity (View)
+ * หมายเหตุ: ข้อมูลจะแสดงผลเฉพาะคำศัพท์และไอเท็มที่ผู้เล่นตอบคำถามผ่านหรือค้นพบแล้วเท่านั้น
  */
 public class NotebookController {
+
+    // เก็บรายการคำศัพท์และไอเท็มที่ปลดล็อกแล้วในหน่วยความจำชั่วคราว
+    private static final List<String> unlockedVocabulary = new ArrayList<>();
+    private static final List<String> unlockedDiscoveredItems = new ArrayList<>();
 
     private Notebook notebookModel; // Model เก็บข้อมูลสมุดโน้ต
 
     public NotebookController() {
         this.notebookModel = new Notebook();
-        loadInitialData();
+        syncDataWithModel();
     }
 
     public NotebookController(Notebook notebookModel) {
         if (notebookModel == null) {
             this.notebookModel = new Notebook();
-            loadInitialData();
         } else {
             this.notebookModel = notebookModel;
         }
+        syncDataWithModel();
     }
 
-    // โหลดข้อมูลเริ่มต้นลงใน Notebook Model
-    private void loadInitialData() {
-        if (notebookModel.getVocabulary().isEmpty()) {
-            notebookModel.addVocabulary("1. Encapsulation - การซ่อนรายละเอียดภายใน");
-            notebookModel.addVocabulary("2. Inheritance - การสืบทอดคุณสมบัติ");
-            notebookModel.addVocabulary("3. Polymorphism - การมีได้หลายรูปแบบ");
-            notebookModel.addVocabulary("4. Microcontroller - ชิปควบคุมอุปกรณ์");
-            notebookModel.addVocabulary("5. Software Engineering - วิศวกรรมซอฟต์แวร์");
+    // ซิงค์เฉพาะคำศัพท์และไอเท็มที่ปลดล็อกแล้วเข้าสู่ Notebook Model
+    private void syncDataWithModel() {
+        for (String vocab : unlockedVocabulary) {
+            notebookModel.addVocabulary(vocab);
         }
+        for (String item : unlockedDiscoveredItems) {
+            notebookModel.addDiscoveredItem(item);
+        }
+    }
 
-        if (notebookModel.getDiscoveredItems().isEmpty()) {
-            notebookModel.addDiscoveredItem("- โน้ตบุ๊กติดสติ๊กเกอร์รวมเทคโนโลยี (Dev Laptop)");
-            notebookModel.addDiscoveredItem("- แฟลชไดร์ฟ USB (USB Flash Drive)");
-            notebookModel.addDiscoveredItem("- เรซูเม่ (Resume)");
-            notebookModel.addDiscoveredItem("- สาย LAN (Ethernet Cable)");
-            notebookModel.addDiscoveredItem("- ปากกาไวท์บอร์ด (Whiteboard Marker)");
+    // เมธอด static สำหรับบันทึกคำศัพท์ลงสมุดโน้ตเมื่อตอบคำถามถูกต้อง
+    public static void addUnlockedVocabulary(String word) {
+        if (word != null && !word.trim().isEmpty() && !unlockedVocabulary.contains(word)) {
+            unlockedVocabulary.add(word);
         }
+    }
 
-        if (notebookModel.getStories().isEmpty()) {
-            notebookModel.addStory("ภารกิจเตรียมสัมภาษณ์งานของเด็กปี 2");
-            notebookModel.addStory("ค้นหาของสำคัญและตอบคำถามภาษาอังกฤษ");
+    // เมธอด static สำหรับบันทึกไอเท็มที่ค้นพบลงสมุดโน้ต
+    public static void addUnlockedDiscoveredItem(String item) {
+        if (item != null && !item.trim().isEmpty()) {
+            String itemText = item.startsWith("-") ? item : "- " + item;
+            if (!unlockedDiscoveredItems.contains(itemText)) {
+                unlockedDiscoveredItems.add(itemText);
+            }
         }
+    }
+
+    // รีเซ็ตข้อมูลโน้ตทั้งหมด
+    public static void resetNotebook() {
+        unlockedVocabulary.clear();
+        unlockedDiscoveredItems.clear();
     }
 
     // จัดฟอร์แมตข้อความสำหรับแสดงบนหน้ากระดาษฝั่งซ้าย (Vocabulary & Concepts)
@@ -55,8 +70,12 @@ public class NotebookController {
         StringBuilder sb = new StringBuilder();
         sb.append("=== VOCABULARY & CONCEPTS ===\n\n");
         List<String> vocabList = notebookModel.getVocabulary();
-        for (String vocab : vocabList) {
-            sb.append(vocab).append("\n");
+        if (vocabList.isEmpty()) {
+            sb.append("(ยังไม่มีข้อมูล - ตอบคำถามไอเท็มลับในด่านเพื่อบันทึกคำศัพท์)\n");
+        } else {
+            for (String vocab : vocabList) {
+                sb.append(vocab).append("\n\n");
+            }
         }
         return sb.toString();
     }
@@ -66,8 +85,12 @@ public class NotebookController {
         StringBuilder sb = new StringBuilder();
         sb.append("=== DISCOVERED ITEMS ===\n\n");
         List<String> itemList = notebookModel.getDiscoveredItems();
-        for (String item : itemList) {
-            sb.append(item).append("\n");
+        if (itemList.isEmpty()) {
+            sb.append("(ยังไม่มีข้อมูล - ตามหาไอเท็มในด่านเพื่อบันทึกโน้ต)\n");
+        } else {
+            for (String item : itemList) {
+                sb.append(item).append("\n\n");
+            }
         }
         return sb.toString();
     }
@@ -82,10 +105,12 @@ public class NotebookController {
     }
 
     public void addVocabulary(String word) {
+        addUnlockedVocabulary(word);
         notebookModel.addVocabulary(word);
     }
 
     public void addDiscoveredItem(String item) {
+        addUnlockedDiscoveredItem(item);
         notebookModel.addDiscoveredItem(item);
     }
 }

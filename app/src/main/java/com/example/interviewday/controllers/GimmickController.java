@@ -57,7 +57,7 @@ public class GimmickController {
                 "What is the mechanism where a class acquires properties of another class?",
                 "Inheritance",
                 "Listening",
-                R.raw.level1_1,
+                R.raw.level1_2,
                 false
         ));
         questionList.add(new Question(
@@ -67,71 +67,71 @@ public class GimmickController {
                 "What concept allows objects to take many forms?",
                 "Polymorphism",
                 "Listening",
-                R.raw.level1_1,
+                R.raw.level1_3,
                 false
         ));
 
         // --- ชุดโจทย์ด่านที่ 2 (Hardware Tools) ---
         questionList.add(new Question(
                 4, 2, 0,
-                "ด่านที่ 2: อ่านโจทย์ แล้วกดปุ่มพูดตอบคำถามให้ถูกต้อง",
+                "ด่านที่ 2: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
                 R.drawable.ic_logo_1,
-                "Read the hardware tool question and speak the correct answer.",
-                "Ethernet Cable",
-                "Speaking",
-                0,
+                "What hardware component is a compact integrated circuit designed to govern a specific operation in an embedded system?",
+                "Microcontroller",
+                "Listening",
+                R.raw.level2_1,
                 false
         ));
         questionList.add(new Question(
                 5, 2, 1,
-                "ด่านที่ 2: อ่านโจทย์ แล้วกดปุ่มพูดตอบคำถามให้ถูกต้อง",
+                "ด่านที่ 2: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
                 R.drawable.ic_logo_2,
-                "Read the hardware tool question and speak the correct answer.",
-                "External HDD",
-                "Speaking",
-                0,
+                "What electronic test instrument allows observation of varying signal voltages?",
+                "Oscilloscope",
+                "Listening",
+                R.raw.level2_2,
                 false
         ));
         questionList.add(new Question(
                 6, 2, 2,
-                "ด่านที่ 2: อ่านโจทย์ แล้วกดปุ่มพูดตอบคำถามให้ถูกต้อง",
+                "ด่านที่ 2: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
                 R.drawable.ic_logo_3,
-                "Read the hardware tool question and speak the correct answer.",
-                "Algorithm",
-                "Speaking",
-                0,
+                "What electronic measuring instrument combines several measurement functions in one unit?",
+                "Multimeter",
+                "Listening",
+                R.raw.level2_3,
                 false
         ));
 
         // --- ชุดโจทย์ด่านที่ 3 (Interview Summary) ---
         questionList.add(new Question(
                 7, 3, 0,
-                "ด่านที่ 3: ดูข้อมูลสมุดโน้ตทางขวา แล้วพูดสรุปคำตอบ",
+                "ด่านที่ 3: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
                 R.drawable.ic_logo_1,
-                "Summarize your software answer from the notebook.",
-                "Software Engineering",
-                "Speaking",
-                0,
+                "Tell me about yourself and your background.",
+                "I am a Computer Engineering graduate passionate about software development and system architecture.",
+                "Listening",
+                R.raw.level3_1,
                 true
         ));
         questionList.add(new Question(
                 8, 3, 1,
-                "ด่านที่ 3: ดูข้อมูลสมุดโน้ตทางขวา แล้วพูดสรุปคำตอบ",
+                "ด่านที่ 3: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
                 R.drawable.ic_logo_2,
-                "Summarize your architecture answer from the notebook.",
-                "Architecture Diagram",
-                "Speaking",
-                0,
+                "What is your greatest strength?",
+                "My greatest strength is my problem-solving ability and quick adaptability to new technologies.",
+                "Listening",
+                R.raw.level3_2,
                 true
         ));
         questionList.add(new Question(
                 9, 3, 2,
-                "ด่านที่ 3: ดูข้อมูลสมุดโน้ตทางขวา แล้วพูดสรุปคำตอบ",
+                "ด่านที่ 3: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
                 R.drawable.ic_logo_3,
-                "Summarize your system design answer from the notebook.",
-                "System Design",
-                "Speaking",
-                0,
+                "What are your career goals or why do you want to work here?",
+                "I want to apply my technical skills to build scalable software solutions and learn from expert engineers.",
+                "Listening",
+                R.raw.level3_3,
                 true
         ));
     }
@@ -163,6 +163,33 @@ public class GimmickController {
         return getCurrentQuestionModel().getCorrectAnswer();
     }
 
+    // ดึงข้อความคำศัพท์พร้อมคำแปลภาษาไทยประจำข้อคำถามปัจจุบันสำหรับบันทึกลงสมุดโน้ต
+    public String getVocabularyForCurrentQuestion() {
+        Question q = getCurrentQuestionModel();
+        if (q == null) return "";
+        String answer = q.getCorrectAnswer();
+        if ("Encapsulation".equalsIgnoreCase(answer)) {
+            return "1. Encapsulation - การซ่อนรายละเอียดภายใน";
+        } else if ("Inheritance".equalsIgnoreCase(answer)) {
+            return "2. Inheritance - การสืบทอดคุณสมบัติ";
+        } else if ("Polymorphism".equalsIgnoreCase(answer)) {
+            return "3. Polymorphism - การมีได้หลายรูปแบบ";
+        } else if ("Microcontroller".equalsIgnoreCase(answer)) {
+            return "4. Microcontroller - ไมโครคอนโทรลเลอร์";
+        } else if ("Oscilloscope".equalsIgnoreCase(answer)) {
+            return "5. Oscilloscope - ออสซิลโลสโคป";
+        } else if ("Multimeter".equalsIgnoreCase(answer)) {
+            return "6. Multimeter - มัลติมิเตอร์";
+        } else if (answer.startsWith("I am a Computer Engineering graduate")) {
+            return "7. Self Introduction - " + answer;
+        } else if (answer.startsWith("My greatest strength")) {
+            return "8. Greatest Strength - " + answer;
+        } else if (answer.startsWith("I want to apply my technical skills")) {
+            return "9. Career Goals - " + answer;
+        }
+        return (q.getQuestionIndex() + 1) + ". " + answer;
+    }
+
     // Getter เช็กสถานะการมองเห็นกระดาษโน้ต
     public boolean isNotepadVisible() {
         return getCurrentQuestionModel().isNotepadVisible();
@@ -184,19 +211,13 @@ public class GimmickController {
         return pronunciationController.compareSentence();
     }
 
-    // เปลี่ยนข้อคำถาม ถัดไป (0 -> 1 -> 2) หรือเลื่อนด่าน
+    // เปลี่ยนข้อคำถาม ถัดไป (0 -> 1 -> 2)
     public boolean nextQuestion() {
         if (currentQuestion < 2) {
             currentQuestion++;
             return true;
         } else {
-            if (currentStage < 3) {
-                currentStage++;
-                currentQuestion = 0;
-                return true;
-            } else {
-                return false; // เล่นครบ 3 ด่านแล้ว
-            }
+            return false; // เล่นครบคำถามประจำด่านนี้แล้ว
         }
     }
 

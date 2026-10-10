@@ -8,30 +8,36 @@ import com.example.interviewday.models.Setting;
  */
 public class SettingsController {
 
+    private static final Setting sharedSettingModel = new Setting();
+    private static boolean sharedSfxOn = true;
+    private static boolean sharedBgmOn = true;
+
     private Setting settingModel; // Model เก็บสถานะการตั้งค่า
     private boolean isSfxOn;      // สถานะเปิด/ปิด เสียง SFX
     private boolean isBgmOn;      // สถานะเปิด/ปิด เพลง BGM
 
     public SettingsController() {
-        this.settingModel = new Setting();
-        this.isSfxOn = true;
-        this.isBgmOn = true;
+        this.settingModel = sharedSettingModel;
+        this.isSfxOn = sharedSfxOn;
+        this.isBgmOn = sharedBgmOn;
     }
 
     public SettingsController(Setting settingModel) {
-        if (settingModel == null) {
-            this.settingModel = new Setting();
-        } else {
+        if (settingModel != null) {
             this.settingModel = settingModel;
+        } else {
+            this.settingModel = sharedSettingModel;
         }
-        this.isSfxOn = true;
-        this.isBgmOn = true;
+        this.isSfxOn = sharedSfxOn;
+        this.isBgmOn = sharedBgmOn;
     }
 
     // บันทึกการตั้งค่าเสียงและอัปเดตลง Setting Model
     public void saveSettings(boolean sfxOn, int sfxVol, boolean bgmOn, int bgmVol) {
         this.isSfxOn = sfxOn;
         this.isBgmOn = bgmOn;
+        sharedSfxOn = sfxOn;
+        sharedBgmOn = bgmOn;
         if (settingModel != null) {
             settingModel.setSoundVolume(sfxOn ? sfxVol : 0);
             settingModel.setMusicVolume(bgmOn ? bgmVol : 0);
@@ -44,7 +50,9 @@ public class SettingsController {
     }
 
     public void setSettingModel(Setting settingModel) {
-        this.settingModel = settingModel;
+        if (settingModel != null) {
+            this.settingModel = settingModel;
+        }
     }
 
     public boolean isSfxOn() {
@@ -52,7 +60,8 @@ public class SettingsController {
     }
 
     public void setSfxOn(boolean sfxOn) {
-        isSfxOn = sfxOn;
+        this.isSfxOn = sfxOn;
+        sharedSfxOn = sfxOn;
     }
 
     public boolean isBgmOn() {
@@ -60,14 +69,15 @@ public class SettingsController {
     }
 
     public void setBgmOn(boolean bgmOn) {
-        isBgmOn = bgmOn;
+        this.isBgmOn = bgmOn;
+        sharedBgmOn = bgmOn;
     }
 
     public int getSfxVolume() {
-        return settingModel != null ? settingModel.getSoundVolume() : 100;
+        return settingModel != null ? settingModel.getSoundVolume() : 80;
     }
 
     public int getBgmVolume() {
-        return settingModel != null ? settingModel.getMusicVolume() : 100;
+        return settingModel != null ? settingModel.getMusicVolume() : 50;
     }
 }

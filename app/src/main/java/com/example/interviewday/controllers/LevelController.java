@@ -8,19 +8,17 @@ import com.example.interviewday.models.Level3;
 public class LevelController {
     // --Attributes--
     private int currentStage;
-    private int unlockedStage;
+    private static int unlockedStage = 1; // เก็บสถานะการปลดล็อกด่านในหน่วยความจำ (จะรีเซ็ตเป็น 1 เมื่อปิดแอป)
     private Level currentLevelModel;
 
     // --Constructor--
     public LevelController() {
         this.currentStage = 1;
-        this.unlockedStage = 1;
         loadLevelModel(1);
     }
 
     public LevelController(int stageNumber) {
         this.currentStage = stageNumber;
-        this.unlockedStage = 1;
         loadLevelModel(stageNumber);
     }
 
@@ -61,13 +59,19 @@ public class LevelController {
         }
     }
 
-    public void unlockNextStage() {
+    public static void unlockNextStage() {
         if (unlockedStage < 3) {
             unlockedStage++;
         }
     }
 
-    public boolean checkStageUnlock(int stage) {
+    public static void unlockStage(int stage) {
+        if (stage > unlockedStage && stage <= 3) {
+            unlockedStage = stage;
+        }
+    }
+
+    public static boolean checkStageUnlock(int stage) {
         return stage <= unlockedStage;
     }
 
@@ -75,11 +79,15 @@ public class LevelController {
         return currentStage;
     }
 
-    public int getUnlockedStage() {
+    public static int getUnlockedStage() {
         return unlockedStage;
     }
 
-    public void setUnlockedStage(int unlockedStage) {
-        this.unlockedStage = unlockedStage;
+    public static void setUnlockedStage(int stage) {
+        unlockedStage = stage;
+    }
+
+    public static void resetProgress() {
+        unlockedStage = 1;
     }
 }
