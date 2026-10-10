@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="440dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="@drawable/bg_dialog_card"
@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- ตัวเลขเวลา วางซ้อนบนรูปป้าย (เว้น paddingStart หลบหัวนาฬิกาด้านซ้าย) -->
+    <!-- ตัวเลขเวลา วางซ้อนบนรูปป้าย -->
     <TextView
         android:id="@+id/tvRemainingTime"
         android:layout_width="0dp"
@@ -44,15 +44,16 @@
         android:background="?attr/selectableItemBackground"
         android:scaleType="fitCenter"
         android:src="@drawable/btn_continue"
+        app:layout_constraintBottom_toBottomOf="@id/imgTimerCapsule"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/imgTimerCapsule" />
 
     <!-- 3. ปุ่ม SETTINGS (เฟือง) -->
     <ImageButton
         android:id="@+id/btnSettings"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:background="?attr/selectableItemBackground"
         android:scaleType="fitCenter"
         android:src="@drawable/btn_settings"

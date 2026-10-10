@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="440dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="@drawable/bg_dialog_card"
-    android:padding="24dp">
+    android:padding="28dp">
 
     <!-- แถวที่ 1: เสียงเอฟเฟกต์ (SFX) -->
     <ImageButton
@@ -27,8 +27,9 @@
         android:background="?attr/selectableItemBackground"
         android:scaleType="fitCenter"
         android:src="@drawable/btn_sfx_off"
+        app:layout_constraintBottom_toBottomOf="@id/btnSfxOn"
         app:layout_constraintStart_toEndOf="@id/btnSfxOn"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/btnSfxOn" />
 
     <SeekBar
         android:id="@+id/seekbarSfx"
@@ -62,6 +63,7 @@
         android:background="?attr/selectableItemBackground"
         android:scaleType="fitCenter"
         android:src="@drawable/btn_bgm_off"
+        app:layout_constraintBottom_toBottomOf="@id/btnBgmOn"
         app:layout_constraintStart_toEndOf="@id/btnBgmOn"
         app:layout_constraintTop_toTopOf="@id/btnBgmOn" />
 
