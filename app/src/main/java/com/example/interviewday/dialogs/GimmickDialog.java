@@ -1,10 +1,10 @@
 package com.example.interviewday.dialogs;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.example.interviewday.R;
 import com.example.interviewday.controllers.GimmickController;
-import com.example.interviewday.controllers.NotebookController;
 
 import java.util.ArrayList;
 
@@ -65,6 +64,17 @@ public class GimmickDialog extends BaseDialog {
         // สร้าง Controller หากยังไม่มีการกำหนดค่าเริ่มต้น
         if (gimmickController == null) {
             gimmickController = new GimmickController(1, 0);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // ปรับขนาดหน้าต่างสำหรับ GimmickDialog ให้กว้างพอสำหรับแสดงสมุดโน้ตฝั่งขวาในด่าน 3
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            DisplayMetrics metrics = getResources().getDisplayMetrics();
+            int width = (int) (metrics.widthPixels * 0.88f);
+            getDialog().getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 
@@ -171,10 +181,6 @@ public class GimmickDialog extends BaseDialog {
         boolean isCorrect = gimmickController.checkAnswer(recognizedText);
 
         if (isCorrect) {
-            // บันทึกคำศัพท์ลงในสมุดโน้ตเฉพาะเมื่อตอบคำถามถูกต้อง!
-            String vocab = gimmickController.getVocabularyForCurrentQuestion();
-            NotebookController.addUnlockedVocabulary(vocab);
-
             // กรณีพูดถูกต้อง: แสดง Toast ชื่นชม และปลดล็อกปุ่ม "ถัดไป"
             if (getContext() != null) {
                 Toast.makeText(getContext(), "Well done! That's the correct answer. (" + recognizedText + ")", Toast.LENGTH_SHORT).show();
@@ -221,13 +227,5 @@ public class GimmickDialog extends BaseDialog {
     // Getter สำหรับ Controller
     public GimmickController getGimmickController() {
         return gimmickController;
-    }
-
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
-        if (getActivity() instanceof com.example.interviewday.activities.GameStageActivity) {
-            ((com.example.interviewday.activities.GameStageActivity) getActivity()).resumeGameStage();
-        }
     }
 }

@@ -109,7 +109,7 @@ public class GimmickController {
                 "ด่านที่ 3: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
                 R.drawable.ic_logo_1,
                 "Tell me about yourself and your background.",
-                "I am a Computer Engineering graduate passionate about software development and system architecture.",
+                "I am a Computer Engineering graduate passionate about software development and system architecture",
                 "Listening",
                 R.raw.level3_1,
                 true
@@ -119,7 +119,7 @@ public class GimmickController {
                 "ด่านที่ 3: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
                 R.drawable.ic_logo_2,
                 "What is your greatest strength?",
-                "My greatest strength is my problem-solving ability and quick adaptability to new technologies.",
+                "my greatest strength is my problem solving ability and quick adaptability to new technologies",
                 "Listening",
                 R.raw.level3_2,
                 true
@@ -129,7 +129,7 @@ public class GimmickController {
                 "ด่านที่ 3: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
                 R.drawable.ic_logo_3,
                 "What are your career goals or why do you want to work here?",
-                "I want to apply my technical skills to build scalable software solutions and learn from expert engineers.",
+                "I want to apply my technical skills to build scalable software solutions and learn from expert engineers",
                 "Listening",
                 R.raw.level3_3,
                 true

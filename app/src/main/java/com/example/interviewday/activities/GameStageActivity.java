@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.interviewday.R;
+import com.example.interviewday.controllers.GameSessionManager;
 import com.example.interviewday.controllers.GameStageController;
 import com.example.interviewday.controllers.LevelController;
 import com.example.interviewday.controllers.NotebookController;
@@ -54,6 +55,9 @@ public class GameStageActivity extends BaseActivity {
         setContentView(R.layout.activity_game_stage);
 
         int stageNumber = getIntent().getIntExtra("STAGE_NUMBER", 1);
+        if (stageNumber == 1) {
+            GameSessionManager.resetSession();
+        }
         gameStageController = new GameStageController(stageNumber);
 
         initViews();
@@ -219,6 +223,11 @@ public class GameStageActivity extends BaseActivity {
 
         btnNext.setOnClickListener(v -> {
             int currentStage = gameStageController.getCurrentStage();
+            TimerController timerController = gameStageController.getTimerController();
+            if (timerController != null) {
+                GameSessionManager.recordStageTime(currentStage, timerController.getTimeLimit(), timerController.getRemainingTime());
+            }
+
             // ปลดล็อกด่านถัดไปในระบบ
             LevelController.unlockStage(currentStage + 1);
 
@@ -228,12 +237,12 @@ public class GameStageActivity extends BaseActivity {
                 startActivity(intent);
                 finish();
             } else {
-                Intent intent = new Intent(GameStageActivity.this, SummaryActivity.class);
+                Intent intent = new Intent(GameStageActivity.this, EndingActivity.class);
                 intent.putExtra("ENDING_TYPE", isSecretItemFound() ? "SPECIAL" : "NORMAL");
-                intent.putExtra("LEVEL1_TIME", "01:30");
-                intent.putExtra("LEVEL2_TIME", "02:15");
-                intent.putExtra("LEVEL3_TIME", "01:45");
-                intent.putExtra("TOTAL_TIME", "05:30");
+                intent.putExtra("LEVEL1_TIME", GameSessionManager.getLevel1FormattedTime());
+                intent.putExtra("LEVEL2_TIME", GameSessionManager.getLevel2FormattedTime());
+                intent.putExtra("LEVEL3_TIME", GameSessionManager.getLevel3FormattedTime());
+                intent.putExtra("TOTAL_TIME", GameSessionManager.getTotalFormattedTime());
                 startActivity(intent);
                 finish();
             }

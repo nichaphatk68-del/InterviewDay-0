@@ -89,9 +89,24 @@ public class EndingActivity extends BaseActivity {
     }
 
     private void setupListeners() {
-        btnNext.setOnClickListener(v -> goToMainMenu());
+        btnNext.setOnClickListener(v -> goToSummaryOrMenu());
         btnMainMenu.setOnClickListener(v -> goToMainMenu());
         btnRestart.setOnClickListener(v -> restartGame());
+    }
+
+    private void goToSummaryOrMenu() {
+        String endingType = endingController != null ? endingController.getEndingType() : "NORMAL";
+        if ("FAILED".equals(endingType) || "FAILED_ENDING".equals(endingType)) {
+            goToMainMenu();
+        } else {
+            Intent intent = new Intent(this, SummaryActivity.class);
+            if (getIntent() != null && getIntent().getExtras() != null) {
+                intent.putExtras(getIntent().getExtras());
+            }
+            intent.putExtra("ENDING_TYPE", endingType);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void goToMainMenu() {
