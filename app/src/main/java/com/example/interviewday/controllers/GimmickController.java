@@ -42,7 +42,7 @@ public class GimmickController {
         // --- ชุดโจทย์ด่านที่ 1 (OOP Concepts) ---
         questionList.add(new Question(
                 1, 1, 0,
-                "ด่านที่ 1: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
+                "Level 1: Listen to the question, then press the speak button to answer.",
                 R.drawable.ic_logo_1,
                 "What is the OOP concept that hides internal details?",
                 "Encapsulation",
@@ -52,7 +52,7 @@ public class GimmickController {
         ));
         questionList.add(new Question(
                 2, 1, 1,
-                "ด่านที่ 1: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
+                "Level 1: Listen to the question, then press the speak button to answer.",
                 R.drawable.ic_logo_2,
                 "What is the mechanism where a class acquires properties of another class?",
                 "Inheritance",
@@ -62,7 +62,7 @@ public class GimmickController {
         ));
         questionList.add(new Question(
                 3, 1, 2,
-                "ด่านที่ 1: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
+                "Level 1: Listen to the question, then press the speak button to answer.",
                 R.drawable.ic_logo_3,
                 "What concept allows objects to take many forms?",
                 "Polymorphism",
@@ -74,7 +74,7 @@ public class GimmickController {
         // --- ชุดโจทย์ด่านที่ 2 (Hardware Tools) ---
         questionList.add(new Question(
                 4, 2, 0,
-                "ด่านที่ 2: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
+                "Level 2: Listen to the question, then press the speak button to answer.",
                 R.drawable.ic_logo_1,
                 "What hardware component is a compact integrated circuit designed to govern a specific operation in an embedded system?",
                 "Microcontroller",
@@ -84,7 +84,7 @@ public class GimmickController {
         ));
         questionList.add(new Question(
                 5, 2, 1,
-                "ด่านที่ 2: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
+                "Level 2: Listen to the question, then press the speak button to answer.",
                 R.drawable.ic_logo_2,
                 "What electronic test instrument allows observation of varying signal voltages?",
                 "Oscilloscope",
@@ -94,7 +94,7 @@ public class GimmickController {
         ));
         questionList.add(new Question(
                 6, 2, 2,
-                "ด่านที่ 2: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
+                "Level 2: Listen to the question, then press the speak button to answer.",
                 R.drawable.ic_logo_3,
                 "What electronic measuring instrument combines several measurement functions in one unit?",
                 "Multimeter",
@@ -106,7 +106,7 @@ public class GimmickController {
         // --- ชุดโจทย์ด่านที่ 3 (Interview Summary) ---
         questionList.add(new Question(
                 7, 3, 0,
-                "ด่านที่ 3: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
+                "Level 3: Listen to the question, then press the speak button to answer.",
                 R.drawable.ic_logo_1,
                 "Tell me about yourself and your background.",
                 "I am a Computer Engineering graduate passionate about software development and system architecture",
@@ -116,7 +116,7 @@ public class GimmickController {
         ));
         questionList.add(new Question(
                 8, 3, 1,
-                "ด่านที่ 3: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
+                "Level 3: Listen to the question, then press the speak button to answer.",
                 R.drawable.ic_logo_2,
                 "What is your greatest strength?",
                 "my greatest strength is my problem solving ability and quick adaptability to new technologies",
@@ -126,7 +126,7 @@ public class GimmickController {
         ));
         questionList.add(new Question(
                 9, 3, 2,
-                "ด่านที่ 3: ฟังเสียงโจทย์ แล้วกดปุ่มพูดเพื่อตอบคำถาม",
+                "Level 3: Listen to the question, then press the speak button to answer.",
                 R.drawable.ic_logo_3,
                 "What are your career goals or why do you want to work here?",
                 "I want to apply my technical skills to build scalable software solutions and learn from expert engineers",

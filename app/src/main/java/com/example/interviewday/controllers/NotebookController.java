@@ -71,7 +71,7 @@ public class NotebookController {
         sb.append("=== VOCABULARY & CONCEPTS ===\n\n");
         List<String> vocabList = notebookModel.getVocabulary();
         if (vocabList.isEmpty()) {
-            sb.append("(ยังไม่มีข้อมูล - ตอบคำถามไอเท็มลับในด่านเพื่อบันทึกคำศัพท์)\n");
+            sb.append("(No information yet – Answer the question regarding the secret item in the level to record the vocabulary.)\n");
         } else {
             for (String vocab : vocabList) {
                 sb.append(vocab).append("\n\n");
@@ -86,7 +86,7 @@ public class NotebookController {
         sb.append("=== DISCOVERED ITEMS ===\n\n");
         List<String> itemList = notebookModel.getDiscoveredItems();
         if (itemList.isEmpty()) {
-            sb.append("(ยังไม่มีข้อมูล - ตามหาไอเท็มในด่านเพื่อบันทึกโน้ต)\n");
+            sb.append("(No information yet – find items in the level to record notes.)\n");
         } else {
             for (String item : itemList) {
                 sb.append(item).append("\n\n");
