@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.interviewday.R;
 import com.example.interviewday.controllers.GameSessionManager;
 import com.example.interviewday.controllers.GameStageController;
+import com.example.interviewday.controllers.GimmickController;
 import com.example.interviewday.controllers.LevelController;
 import com.example.interviewday.controllers.NotebookController;
 import com.example.interviewday.controllers.TimerController;
@@ -22,19 +23,12 @@ import com.example.interviewday.models.SecretItem;
 
 import java.util.List;
 
-/*
- * คลาส GameStageActivity
- * - [OOP Concept: Inheritance & Encapsulation] สืบทอดจาก BaseActivity และซ่อน Views/Controllers
- * - [MVC Pattern: View] หน้าเล่นเกมตามล่าหาไอเท็ม ควบคุมโดย GameStageController
- * - [Event-driven] ดักจับ Event คลิกเก็บไอเท็ม กด Pause และ Event นับเวลาถอยหลัง (onTick/onFinish)
- * - [Multitasking] รันเวลาถอยหลังแยกใน Background Thread และสั่ง Pause/Resume/Stop ใน Lifecycle
- */
 public class GameStageActivity extends BaseActivity {
 
-    // ===== [MVC Pattern: Controller] =====
+    // Controller
     private GameStageController gameStageController;
 
-    // ===== [OOP Concept: Encapsulation] UI Views =====
+    // UI Views
     private ImageView imgBackground;
     private ImageButton btnPause;
     private TextView tvTimer;
@@ -136,21 +130,19 @@ public class GameStageActivity extends BaseActivity {
         }
     }
 
-    // [Event-driven Programming & Multitasking] ตั้งค่าระบบนับเวลาถอยหลังแยกทำงานต่างหากใน Background Thread
     private void setupTimer() {
         TimerController timerController = gameStageController.getTimerController();
         if (timerController != null) {
-            // [Event-driven Programming] ลงทะเบียน Callback ดักจับเหตุการณ์แต่ละวินาที (onTick) และเมื่อหมดเวลา (onFinish)
             timerController.setOnTimerTickListener(new TimerController.OnTimerTickListener() {
                 @Override
                 public void onTick(String formattedTime) {
-                    updateTimerText(formattedTime); // อัปเดต UI เวลาคงเหลือ
+                    updateTimerText(formattedTime);
                 }
 
                 @Override
                 public void onFinish() {
                     updateTimerText("00:00");
-                    // [Event-driven] เมื่อหมดเวลา เปลี่ยนหน้าไปฉากจบประเภท FAILED ทันที
+                    // เวลาหมด เปิดหน้า Failed ending ทันที
                     Intent intent = new Intent(GameStageActivity.this, EndingActivity.class);
                     intent.putExtra("ENDING_TYPE", "FAILED");
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -162,7 +154,6 @@ public class GameStageActivity extends BaseActivity {
         gameStageController.startStage();
     }
 
-    // [Multitasking & Lifecycle Management] หยุดการทำงานของเวลานับถอยหลังชั่วคราวเมื่อพับจอหรือเปิด Dialog
     @Override
     protected void onPause() {
         super.onPause();
@@ -171,7 +162,6 @@ public class GameStageActivity extends BaseActivity {
         }
     }
 
-    // [Multitasking & Lifecycle Management] ให้เวลานับถอยหลังทำงานต่อเมื่อกลับเข้าสู่หน้าจอเกม
     @Override
     protected void onResume() {
         super.onResume();
@@ -180,7 +170,6 @@ public class GameStageActivity extends BaseActivity {
         }
     }
 
-    // [Multitasking & Lifecycle Management] ยกเลิกและทำลายนาฬิกานับถอยหลังเมื่อปิดหน้าจอนี้ เพื่อคืนหน่วยความจำและป้องกัน Memory Leak
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -313,11 +302,18 @@ public class GameStageActivity extends BaseActivity {
 
             NotebookController.addUnlockedDiscoveredItem(secretName);
 
+            // ปลดล็อกคำศัพท์ทั้งหมดของด่านนี้ลงสมุดโน้ตทันทีเมื่อพบไอเท็มลับ
+            int currentStage = gameStageController.getCurrentStage();
+            for (int qIdx = 0; qIdx < 3; qIdx++) {
+                GimmickController tempController = new GimmickController(currentStage, qIdx);
+                NotebookController.addUnlockedVocabulary(tempController.getVocabularyForCurrentQuestion());
+            }
+
             pauseGameStage();
 
             // เปิด GimmickDialog สำหรับตอบคำถามไอเท็มลับประจำด่าน
             GimmickDialog dialog = new GimmickDialog();
-            dialog.setStageAndQuestion(gameStageController.getCurrentStage(), 0);
+            dialog.setStageAndQuestion(currentStage, 0);
             dialog.show(getSupportFragmentManager(), "GimmickDialog");
         });
     }

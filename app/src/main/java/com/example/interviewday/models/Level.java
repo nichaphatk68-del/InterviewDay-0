@@ -17,7 +17,6 @@ public abstract class Level {
     protected int gameBgResId;
     protected List<Item> requiredItems = new ArrayList<>();
     protected SecretItem secretItem;
-    protected Time timer = new Time();
 
     public Level(int levelID, String levelName) {
         this.levelID = levelID;
@@ -81,38 +80,16 @@ public abstract class Level {
         return true;
     }
 
-    public Time getTimer() {
-        return timer;
-    }
-
-    public void triggerFail() {
-        System.out.println(levelName + " : ผู้เล่นล้มเหลวในด่านนี้");
-        System.out.println("เนื้อเรื่อง: " + failStory);
-    }
-
-    public boolean updateTime(int elapsedSeconds) {
-        timer.decreaseTime(elapsedSeconds);
-        if (timer.isTimeUp() && !isAllItemsFound()) {
-            triggerFail();
-            return true;
-        }
-        return false;
-    }
-
     public void startLevel() {
         if (status == LevelStatus.LOCKED) {
             System.out.println(levelName + " ยังไม่ถูกปลดล็อก");
             return;
         }
         loadContent();
-        timer.reset();
-        timer.start();
-        System.out.println("เริ่มด่าน: " + levelName
-                + " (มีเวลา " + timer.getMinutes() + " นาที " + timer.getSeconds() + " วินาที)");
+        System.out.println("เริ่มด่าน: " + levelName);
     }
 
     public void completeLevel() {
-        timer.stop();
         this.status = LevelStatus.COMPLETED;
         System.out.println(levelName + " ผ่านเรียบร้อยแล้ว");
     }
