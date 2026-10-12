@@ -18,18 +18,6 @@ public abstract class Ending {
         this.endingName = endingName;
     }
 
-    public abstract boolean checkCondition(int completedLevels, int completedQuests, int secretItemsCollected);
-
-    public void trigger(int completedLevels, int completedQuests, int secretItemsCollected) {
-        if (checkCondition(completedLevels, completedQuests, secretItemsCollected)) {
-            showCutscene();
-        }
-    }
-
-    protected void showCutscene() {
-        System.out.println("แสดงฉากจบ: " + endingName);
-    }
-
     public int getBgResId() {
         return bgResId;
     }

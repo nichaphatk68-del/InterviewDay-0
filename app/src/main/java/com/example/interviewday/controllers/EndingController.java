@@ -8,22 +8,13 @@ import com.example.interviewday.models.TrueEnding;
 public class EndingController {
     private Ending currentEnding;
     private String endingType;
-    private int secretItemCount;
-    private boolean sideQuestCompleted;
-
-    public EndingController() {
-        this.endingType = "NORMAL";
-        this.secretItemCount = 0;
-        this.sideQuestCompleted = false;
-        loadEndingModel(endingType);
-    }
 
     public EndingController(String endingType) {
         if (endingType == null) {
             endingType = "NORMAL";
         }
         this.endingType = endingType;
-        loadEndingModel(endingType);
+        loadEndingModel(this.endingType);
     }
 
     public void loadEndingModel(String endingType) {
@@ -54,39 +45,7 @@ public class EndingController {
         return currentEnding;
     }
 
-    public void calculateEnding() {
-        if (secretItemCount >= 3) {
-            this.endingType = "SPECIAL";
-        } else {
-            this.endingType = "NORMAL";
-        }
-        loadEndingModel(this.endingType);
-    }
-
-    public boolean checkEndingCondition(int secretItems, boolean sideQuest) {
-        this.secretItemCount = secretItems;
-        this.sideQuestCompleted = sideQuest;
-        calculateEnding();
-        return "SPECIAL".equals(endingType);
-    }
-
     public String getEndingType() {
         return endingType;
-    }
-
-    public int getSecretItemCount() {
-        return secretItemCount;
-    }
-
-    public void setSecretItemCount(int secretItemCount) {
-        this.secretItemCount = secretItemCount;
-    }
-
-    public boolean isSideQuestCompleted() {
-        return sideQuestCompleted;
-    }
-
-    public void setSideQuestCompleted(boolean sideQuestCompleted) {
-        this.sideQuestCompleted = sideQuestCompleted;
     }
 }

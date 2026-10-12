@@ -13,18 +13,12 @@ import java.util.List;
  */
 public class GimmickController {
 
-    // ===== Attributes =====
-    private int currentStage;                          // ด่านปัจจุบัน (1, 2, 3)
-    private int currentQuestion;                       // ข้อปัจจุบัน (0, 1, 2)
+    private int currentStage;
+    private int currentQuestion;
 
-    private final List<Question> questionList;         // รายการ Model เก็บโจทย์และคำตอบทั้งหมด
-    private final AudioController audioController;    // Controller สำหรับจัดการเสียงอ่านโจทย์
-    private final PronunciationController pronunciationController; // Controller สำหรับตรวจเสียงพูด
-
-    // ===== Constructors =====
-    public GimmickController() {
-        this(1, 0);
-    }
+    private final List<Question> questionList;
+    private final AudioController audioController;
+    private final PronunciationController pronunciationController;
 
     public GimmickController(int currentStage, int currentQuestion) {
         this.currentStage = currentStage;
@@ -32,10 +26,9 @@ public class GimmickController {
         this.audioController = new AudioController();
         this.pronunciationController = new PronunciationController();
         this.questionList = new ArrayList<>();
-        loadQuestions(); // โหลดข้อมูล Model โจทย์
+        loadQuestions();
     }
 
-    // โหลดชุดข้อมูลโจทย์ คำตอบ เสียงอ่าน และ UI res ของแต่ละด่านเข้าสู่ Model
     private void loadQuestions() {
         questionList.clear();
 
@@ -136,7 +129,6 @@ public class GimmickController {
         ));
     }
 
-    // ค้นหาและดึง Question Model ประจำด่านและข้อปัจจุบัน
     public Question getCurrentQuestionModel() {
         for (Question q : questionList) {
             if (q.getStageNumber() == currentStage && q.getQuestionIndex() == currentQuestion) {
@@ -148,22 +140,18 @@ public class GimmickController {
                 "Question", "Encapsulation", "Speaking", 0, false);
     }
 
-    // Getter ส่งข้อมูลคำสั่งสอนให้ View
     public String getInstructionText() {
         return getCurrentQuestionModel().getInstructionText();
     }
 
-    // Getter ส่งรูปภาพ Badge ให้ View
     public int getBadgeResId() {
         return getCurrentQuestionModel().getBadgeResId();
     }
 
-    // Getter ส่งคำตอบเฉลยภาษาอังกฤษให้ View
     public String getTargetSentence() {
         return getCurrentQuestionModel().getCorrectAnswer();
     }
 
-    // ดึงข้อความคำศัพท์พร้อมคำแปลภาษาไทยประจำข้อคำถามปัจจุบันสำหรับบันทึกลงสมุดโน้ต
     public String getVocabularyForCurrentQuestion() {
         Question q = getCurrentQuestionModel();
         if (q == null) return "";
@@ -190,12 +178,10 @@ public class GimmickController {
         return (q.getQuestionIndex() + 1) + ". " + answer;
     }
 
-    // Getter เช็กสถานะการมองเห็นกระดาษโน้ต
     public boolean isNotepadVisible() {
         return getCurrentQuestionModel().isNotepadVisible();
     }
 
-    // สั่งการ AudioController ให้เล่นเสียงโจทย์ประจำข้อ
     public void playQuestionAudio(Context context) {
         int resId = getCurrentQuestionModel().getAudioResId();
         if (resId != 0 && audioController != null) {
@@ -203,7 +189,6 @@ public class GimmickController {
         }
     }
 
-    // ส่งข้อความที่พูดเข้า PronunciationController เพื่อตรวจเทียบคำตอบ
     public boolean checkAnswer(String spokenText) {
         String targetWord = getTargetSentence();
         pronunciationController.setTargetSentence(targetWord);
@@ -215,43 +200,22 @@ public class GimmickController {
         return isCorrect;
     }
 
-    // เปลี่ยนข้อคำถาม ถัดไป (0 -> 1 -> 2)
     public boolean nextQuestion() {
         if (currentQuestion < 2) {
             currentQuestion++;
             return true;
         } else {
-            return false; // เล่นครบคำถามประจำด่านนี้แล้ว
+            return false;
         }
     }
 
-    // ===== Getters & Setters =====
-    public int getCurrentStage() {
-        return currentStage;
-    }
-
-    public void setCurrentStage(int currentStage) {
-        this.currentStage = currentStage;
-    }
 
     public int getCurrentQuestion() {
         return currentQuestion;
     }
 
-    public void setCurrentQuestion(int currentQuestion) {
-        this.currentQuestion = currentQuestion;
-    }
-
     public void setStageAndQuestion(int stage, int question) {
         this.currentStage = stage;
         this.currentQuestion = question;
-    }
-
-    public AudioController getAudioController() {
-        return audioController;
-    }
-
-    public PronunciationController getPronunciationController() {
-        return pronunciationController;
     }
 }

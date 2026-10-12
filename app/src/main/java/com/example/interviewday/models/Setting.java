@@ -1,89 +1,47 @@
 package com.example.interviewday.models;
 
+/*
+ * คลาส Setting
+ * - [MVC Pattern: Model] โมเดลเก็บข้อมูลการตั้งค่าระดับเสียงเพลงประกอบ (Music Volume) และเสียงเอฟเฟกต์ (Sound Volume)
+ * - [OOP Concept: Encapsulation] ซ่อนฟิลด์ข้อมูลด้วย private และเข้าถึงผ่าน Getters/Setters
+ */
 public class Setting {
 
-    // ===== Attributes =====
-    private String language;
-    private int musicVolume;
-    private int soundVolume;
-    private int voiceVolume;
-    private boolean vibration;
+    // ===== [OOP Concept: Encapsulation] Attributes =====
+    private int musicVolume; // ระดับเสียงเพลง BGM (0 - 100)
+    private int soundVolume; // ระดับเสียงเอฟเฟกต์ SFX (0 - 100)
 
-    // ===== Constructor =====
+    // ===== [OOP Concept: Constructor] =====
+    // คอนสตรัคเตอร์กำหนดค่าเริ่มต้นระดับเสียงเป็น 100
     public Setting() {
-        language = "English";
-        musicVolume = 100;
-        soundVolume = 100;
-        voiceVolume = 100;
-        vibration = true;
+        this.musicVolume = 100;
+        this.soundVolume = 100;
     }
 
-    // ===== Language =====
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    // ===== Music =====
-
+    // ===== [OOP Concept: Encapsulation - Getters & Setters] =====
+    // ดึงระดับเสียงเพลง BGM
     public int getMusicVolume() {
         return musicVolume;
     }
 
+    // กำหนดระดับเสียงเพลง BGM โดยจำกัดช่วงให้อยู่ระหว่าง 0 ถึง 100
     public void setMusicVolume(int musicVolume) {
         this.musicVolume = limitVolume(musicVolume);
     }
 
-    // ===== Sound Effect =====
-
+    // ดึงระดับเสียงเอฟเฟกต์ SFX
     public int getSoundVolume() {
         return soundVolume;
     }
 
+    // กำหนดระดับเสียงเอฟเฟกต์ SFX โดยจำกัดช่วงให้อยู่ระหว่าง 0 ถึง 100
     public void setSoundVolume(int soundVolume) {
         this.soundVolume = limitVolume(soundVolume);
     }
 
-    // ===== Voice =====
-
-    public int getVoiceVolume() {
-        return voiceVolume;
-    }
-
-    public void setVoiceVolume(int voiceVolume) {
-        this.voiceVolume = limitVolume(voiceVolume);
-    }
-
-    // ===== Vibration =====
-
-    public boolean isVibrationEnabled() {
-        return vibration;
-    }
-
-    public void setVibration(boolean vibration) {
-        this.vibration = vibration;
-    }
-
-    public void toggleVibration() {
-        vibration = !vibration;
-    }
-
-    // ===== Check Volume =====
-
+    // ===== Private Helper Method =====
+    // เมธอดตรวจสอบและควบคุมระดับเสียงให้อยู่ในช่วง 0 - 100
     private int limitVolume(int volume) {
-
-        if (volume < 0) {
-            return 0;
-        }
-
-        if (volume > 100) {
-            return 100;
-        }
-
-        return volume;
+        return Math.max(0, Math.min(100, volume));
     }
 }

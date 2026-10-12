@@ -225,8 +225,4 @@ public class GimmickDialog extends BaseDialog {
         }
     }
 
-    // Getter สำหรับ Controller
-    public GimmickController getGimmickController() {
-        return gimmickController;
-    }
 }

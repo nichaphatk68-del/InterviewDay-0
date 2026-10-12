@@ -82,15 +82,12 @@ public class SummaryActivity extends BaseActivity {
         }
     }
 
-    // สลับหน้าย้อนกลับไปที่ MainMenuActivity
+    // ===== [Event-driven Programming] =====
+    // สลับหน้าย้อนกลับไปที่ MainMenuActivity และเคลียร์ Back Stack
     private void goToMainMenu() {
         Intent intent = new Intent(SummaryActivity.this, MainMenuActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
-    }
-
-    public ResultController getResultController() {
-        return resultController;
     }
 }

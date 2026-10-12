@@ -9,27 +9,29 @@ import com.example.interviewday.models.SecretItem;
 
 import java.util.List;
 
+/*
+ * คลาส GameStageController
+ * - [MVC Pattern: Controller] ทำหน้าที่เป็น Controller หลักในการควบคุมสภาวะและเนื้อหาของแต่ละด่าน (Stage 1, 2, 3)
+ * - [OOP Concept: Encapsulation & Composition] ควบคุม Level (Model) และ TimerController (Sub-controller)
+ * - [Polymorphism] โหลดวัตถุด่านลูก (Level1, Level2, Level3) เข้าสู่ตัวแปรอ้างอิงคลาสแม่ (Level)
+ */
 public class GameStageController {
-    // --Attributes--
-    private int currentStage;
-    private Level currentLevel;
-    private TimerController timerController;
-    private String gameState;
-    private boolean isPlaying;
 
-    // --Constructor--
-    public GameStageController() {
-        this(1);
-    }
+    // ===== [OOP Concept: Encapsulation] Attributes =====
+    private int currentStage;                   // หมายเลขด่านปัจจุบัน (1, 2, 3)
+    private Level currentLevel;                 // วัตถุด่านปัจจุบัน (Level1, Level2, หรือ Level3)
+    private final TimerController timerController;   // ตัวจัดการเวลาประจำด่าน
 
+    // ===== [OOP Concept: Constructor] =====
+    // คอนสตรัคเตอร์เริ่มต้นด่านตามหมายเลขด่านที่ระบุ และสร้าง TimerController
     public GameStageController(int stageNumber) {
         this.currentStage = stageNumber;
-        this.gameState = "IDLE";
-        this.isPlaying = false;
         this.timerController = new TimerController();
         loadLevel(stageNumber);
     }
 
+    // ===== [OOP Concept: Polymorphism] =====
+    // โหลดอินสแตนซ์ของด่านตามหมายเลข stageNumber (Factory Method Logic)
     public void loadLevel(int stageNumber) {
         this.currentStage = stageNumber;
         switch (stageNumber) {
@@ -46,9 +48,9 @@ public class GameStageController {
         }
     }
 
+    // ===== [Stage Lifecycle & Timer Control Methods] =====
+    // เริ่มด่านเกมและเปิดใช้งานตัวจับเวลา
     public void startStage() {
-        this.gameState = "PLAYING";
-        this.isPlaying = true;
         if (currentLevel != null) {
             currentLevel.startLevel();
         }
@@ -57,31 +59,29 @@ public class GameStageController {
         }
     }
 
+    // หยุดเวลาด่านเกมชั่วคราว (Pause)
     public void pauseStage() {
-        this.gameState = "PAUSED";
-        this.isPlaying = false;
         if (timerController != null) {
             timerController.pauseTimer();
         }
     }
 
+    // เล่นเวลาด่านเกมต่อ (Resume)
     public void resumeStage() {
-        this.gameState = "PLAYING";
-        this.isPlaying = true;
         if (timerController != null) {
             timerController.resumeTimer();
         }
     }
 
+    // หยุดระบบด่านเกมอย่างสมบูรณ์
     public void stopStage() {
-        this.gameState = "STOPPED";
-        this.isPlaying = false;
         if (timerController != null) {
             timerController.stopTimer();
         }
     }
 
-    // จัดการเก็บไอเทมปกติ
+    // ===== [MVC Pattern: Item Collection Business Logic] =====
+    // จัดการเก็บไอเทมปกติ และคืนค่า true หากเก็บไอเทมปกติครบทั้งหมดในด่านแล้ว
     public boolean collectNormalItem(int itemIndex) {
         if (currentLevel == null) return false;
         List<Item> items = currentLevel.getRequiredItems();
@@ -92,7 +92,7 @@ public class GameStageController {
         return currentLevel.isAllItemsFound();
     }
 
-    // จัดการเก็บไอเทมลับ
+    // จัดการเก็บไอเทมลับประจำด่าน และคืนค่าชื่อไอเทมลับที่เก็บได้
     public String collectSecretItem() {
         if (currentLevel == null) return "";
         SecretItem secret = currentLevel.getSecretItem();
@@ -103,43 +103,29 @@ public class GameStageController {
         return "";
     }
 
-    public boolean isAllItemsFound() {
-        return currentLevel != null && currentLevel.isAllItemsFound();
-    }
-
-    public Level getCurrentLevel() {
-        return currentLevel;
-    }
-
+    // ===== [OOP Concept: Encapsulation - Getters] =====
+    // ดึงรายการไอเทมปกติทั้งหมดของด่านปัจจุบัน
     public List<Item> getNormalItems() {
         return currentLevel != null ? currentLevel.getRequiredItems() : null;
     }
 
+    // ดึงวัตถุไอเทมลับประจำด่านปัจจุบัน
     public SecretItem getSecretItem() {
         return currentLevel != null ? currentLevel.getSecretItem() : null;
     }
 
+    // ดึง Resource ID ภาพพื้นหลังของด่านปัจจุบัน
     public int getBackgroundResId() {
         return currentLevel != null ? currentLevel.getGameBgResId() : 0;
     }
 
+    // ดึงวัตถุ TimerController
     public TimerController getTimerController() {
         return timerController;
     }
 
+    // ดึงหมายเลขด่านปัจจุบัน
     public int getCurrentStage() {
         return currentStage;
-    }
-
-    public void setCurrentStage(int currentStage) {
-        this.currentStage = currentStage;
-    }
-
-    public String getGameState() {
-        return gameState;
-    }
-
-    public boolean isPlaying() {
-        return isPlaying;
     }
 }

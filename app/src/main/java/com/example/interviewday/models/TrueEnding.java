@@ -16,9 +16,4 @@ public class TrueEnding extends Ending {
         this.logoResId = R.drawable.ic_logo_special;
         this.isLogoLeft = true;
     }
-
-    @Override
-    public boolean checkCondition(int completedLevels, int completedQuests, int secretItemsCollected) {
-        return completedLevels >= 3 && secretItemsCollected >= 3;
-    }
 }

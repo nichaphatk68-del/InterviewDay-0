@@ -16,9 +16,4 @@ public class NormalEnding extends Ending {
         this.logoResId = R.drawable.ic_logo_normal;
         this.isLogoLeft = true;
     }
-
-    @Override
-    public boolean checkCondition(int completedLevels, int completedQuests, int secretItemsCollected) {
-        return completedLevels >= 3;
-    }
 }

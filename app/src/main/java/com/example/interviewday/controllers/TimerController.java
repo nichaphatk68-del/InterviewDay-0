@@ -1,100 +1,110 @@
 package com.example.interviewday.controllers;
 
 import android.os.CountDownTimer;
+import java.util.Locale;
 
+/*
+ * คลาส TimerController
+ * - [MVC Pattern: Controller] จัดการโลจิกการจับถอยหลังเวลา (CountDownTimer) ของแต่ละด่านในเกม
+ * - [Event-driven / Listener] ใช้ Callback Interface สื่อสารกับ View (GameStageActivity)
+ */
 public class TimerController {
 
+    // ===== [OOP Concept: Encapsulation] Attributes =====
+    private final int timeLimit;                    // เวลาจำกัดทั้งหมดของด่าน (วินาที)
+    private int remainingTime;                       // เวลาที่เหลืออยู่ปัจจุบัน (วินาที)
+    private boolean isRunning;                       // สถานะว่าตัวจับเวลากำลังทำงานอยู่หรือไม่
+    private CountDownTimer countDownTimer;           // วัตถุ CountDownTimer ของ Android
+    private OnTimerTickListener onTimerTickListener; // Listener สำหรับรับ Callback
+
+    // ===== Interface Listener =====
+    // Callback Interface สำหรับส่งเหตุการณ์เวลาเปลี่ยน (onTick) และหมดเวลา (onFinish) ไปยัง View
     public interface OnTimerTickListener {
         void onTick(String formattedTime);
         void onFinish();
     }
 
-    // --Attributes--
-    private int timeLimit;
-    private int remainingTime;
-    private boolean isRunning;
-    private CountDownTimer countDownTimer;
-    private OnTimerTickListener timerTickListener;
-
-    // --Constructor--
-    public TimerController(){
-        this.timeLimit = 180; // 180 วินาที (3 นาที)
-        this.remainingTime = timeLimit;
+    // ===== [OOP Concept: Constructor] =====
+    // คอนสตรัคเตอร์กำหนดค่าเริ่มต้นเวลาจำกัด 180 วินาที (3 นาที)
+    public TimerController() {
+        this.timeLimit = 180;
+        this.remainingTime = 180;
         this.isRunning = false;
     }
 
+    // กำหนด Listener สำหรับรับ Callback เหตุการณ์จากตัวจับเวลา
     public void setOnTimerTickListener(OnTimerTickListener listener) {
-        this.timerTickListener = listener;
+        this.onTimerTickListener = listener;
     }
 
-    // --Methods--
-    public void startTimer(){
-        if (isRunning) return;
+    // ===== [Timer Control Methods] =====
+    // เริ่มต้นนับถอยหลังเวลา
+    public void startTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
 
-        isRunning = true;
         countDownTimer = new CountDownTimer(remainingTime * 1000L, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                remainingTime = (int) (millisUntilFinished / 1000);
+                if (onTimerTickListener != null) {
+                    onTimerTickListener.onTick(getFormattedTime());
+                }
+            }
+
             @Override
             public void onFinish() {
                 remainingTime = 0;
                 isRunning = false;
-                if (timerTickListener != null) {
-                    timerTickListener.onFinish();
+                if (onTimerTickListener != null) {
+                    onTimerTickListener.onFinish();
                 }
             }
-            @Override
-            public void onTick(long millisUntilFinished) {
-                remainingTime = (int) (millisUntilFinished / 1000);
-                updateTimer();
-                if (timerTickListener != null) {
-                    timerTickListener.onTick(getFormattedTime());
-                }
-            }
-        }.start();
+        };
+
+        countDownTimer.start();
+        isRunning = true;
     }
 
-    public void pauseTimer(){
-        if (countDownTimer != null){
+    // หยุดจับเวลาชั่วคราว (Pause)
+    public void pauseTimer() {
+        if (countDownTimer != null) {
             countDownTimer.cancel();
+            isRunning = false;
         }
-        isRunning = false;
     }
 
-    public void resumeTimer(){
-        startTimer();
+    // ทำงานต่อจากเวลาที่เหลืออยู่ (Resume)
+    public void resumeTimer() {
+        if (!isRunning && remainingTime > 0) {
+            startTimer();
+        }
     }
 
-    public void stopTimer(){
-        if (countDownTimer != null){
+    // ยกเลิกและหยุดการจับเวลาอย่างสมบูรณ์ (Stop)
+    public void stopTimer() {
+        if (countDownTimer != null) {
             countDownTimer.cancel();
+            isRunning = false;
         }
-        isRunning = false;
     }
 
-    public void resetTimer(){
-        stopTimer();
-        remainingTime = timeLimit;
+    // ===== [OOP Concept: Encapsulation - Getters] =====
+    // ดึงเวลาจำกัดทั้งหมดของด่าน
+    public int getTimeLimit() {
+        return timeLimit;
     }
 
-    public void updateTimer(){
+    // ดึงเวลาที่เหลืออยู่ปัจจุบัน
+    public int getRemainingTime() {
+        return remainingTime;
     }
 
-    public boolean checkTimeOut(){
-        return remainingTime <= 0;
-    }
-
-    // --Getters & Setters--
-    public int getTimeLimit(){return timeLimit;}
-    public void setTimeLimit(int timeLimit){
-        this.timeLimit = timeLimit;
-        this.remainingTime = timeLimit;
-    }
-    public int getRemainingTime() {return remainingTime;}
-    public void setRemainingTime(int remainingTime) {this.remainingTime = remainingTime;}
-    public boolean isRunning(){return isRunning;}
-
+    // แปลงเวลาที่เหลืออยู่เป็นข้อความฟอร์แมต "MM:SS" (เช่น "02:30")
     public String getFormattedTime() {
         int minutes = remainingTime / 60;
         int seconds = remainingTime % 60;
-        return String.format("%02d:%02d", minutes, seconds);
+        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
     }
 }

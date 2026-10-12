@@ -16,9 +16,4 @@ public class FailedEnding extends Ending {
         this.logoResId = R.drawable.ic_logo_failed;
         this.isLogoLeft = false;
     }
-
-    @Override
-    public boolean checkCondition(int completedLevels, int completedQuests, int secretItemsCollected) {
-        return false;
-    }
 }

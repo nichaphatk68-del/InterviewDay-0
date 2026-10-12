@@ -184,7 +184,4 @@ public class SettingsDialog extends BaseDialog {
         applyAndSave();
     }
 
-    public SettingsController getSettingsController() {
-        return settingsController;
-    }
 }

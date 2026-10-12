@@ -2,23 +2,22 @@ package com.example.interviewday.models;
 
 import com.example.interviewday.R;
 
-/**
- * คลาสลูก: จัดการรายละเอียดและเนื้อหาของด่านที่ 3
- * OOP: Inheritance + Polymorphism
+/*
+ * คลาสลูก Level3
+ * - [OOP Concept: Inheritance] สืบทอดจากคลาสแม่ Level
+ * - [OOP Concept: Polymorphism] Override เมธอด loadContent() เพื่อจัดการโหลดเนื้อหาของด่านที่ 3
  */
 public class Level3 extends Level {
 
-    private boolean isFinalLevel;
-
+    // ===== [OOP Concept: Constructor] =====
+    // กำหนดรายละเอียด ไอเทม และเรื่องราวประจำด่านที่ 3 (ห้องสัมภาษณ์งาน)
     public Level3() {
         super(3, "ห้องสัมภาษณ์งานกับทีมเทคนิคและวิศวกร");
-        this.isFinalLevel = true;
         this.storyBgResId = R.drawable.bg_story_stage3;
         this.gameBgResId = R.drawable.bg_game_stage3;
 
         setStory(
-                "08:45 น. ในที่สุดก็มาถึงบริษัท! บรรยากาศดูเป็นมืออาชีพและกดดันกว่าที่คิด พี่ HR บอกว่าถึงจะเป็นเด็กปี 2 แต่พี่ๆ จะทดสอบแนวคิดการเขียนโค้ดบนกระดาน และสัมภาษณ์เป็นภาษาอังกฤษด้วย! ต้องรวบรวมอุปกรณ์เตรียมตัวให้พร้อมก่อนถูกเรียกชื่อเข้าห้องสัมภาษณ์",
-                "เวลาหมดลงก่อนที่ผู้เล่นจะเตรียมเอกสารครบสำหรับสัมภาษณ์ ทีมงานส่ายหน้าและกล่าวขอบคุณที่มาสัมภาษณ์ แต่ปฏิเสธการรับเข้าทำงาน ผู้เล่นเดินออกจากห้องสัมภาษณ์ด้วยความผิดหวัง"
+                "08:45 น. ในที่สุดก็มาถึงบริษัท! บรรยากาศดูเป็นมืออาชีพและกดดันกว่าที่คิด พี่ HR บอกว่าถึงจะเป็นเด็กปี 2 แต่พี่ๆ จะทดสอบแนวคิดการเขียนโค้ดบนกระดาน และสัมภาษณ์เป็นภาษาอังกฤษด้วย! ต้องรวบรวมอุปกรณ์เตรียมตัวให้พร้อมก่อนถูกเรียกชื่อเข้าห้องสัมภาษณ์"
         );
 
         addRequiredItem(new NormalItem(1, "Whiteboard Marker", "ปากกาไวท์บอร์ด", R.drawable.ic_s3_item1_shadow, R.drawable.ic_s3_item1_color, 0.20f, 0.80f));
@@ -28,12 +27,9 @@ public class Level3 extends Level {
         setSecretItem(new SecretItem(103, "Executive Recommendation Letter", "ไอเทมลับด่าน 3", "จดหมายรับรองจากผู้บริหาร", R.drawable.ic_secret_stage3, 0.64f, 0.30f));
     }
 
+    // ===== [OOP Concept: Polymorphism] =====
     @Override
     public void loadContent() {
-        System.out.println("โหลดเนื้อหาด่าน 3: สัมภาษณ์งานวิศวกร (ด่านสุดท้าย)");
-    }
-
-    public boolean isFinalLevel() {
-        return isFinalLevel;
+        System.out.println("โหลดเนื้อหาด่าน 3 เรียบร้อยแล้ว");
     }
 }

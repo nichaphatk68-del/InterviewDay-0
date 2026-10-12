@@ -2,82 +2,72 @@ package com.example.interviewday.controllers;
 
 import com.example.interviewday.models.Setting;
 
-/**
+/*
  * คลาส SettingsController
- * หน้าที่: ควบคุมลอจิกการตั้งค่าเสียงเพลงประกอบ (BGM) และเสียงเอฟเฟกต์ (SFX) เชื่อมกับ Setting (Model)
+ * - [MVC Pattern: Controller] ตัวกลางควบคุมสภาวะการตั้งค่าเสียงเพลงประกอบ (BGM) และเสียงเอฟเฟกต์ (SFX)
+ * - [OOP Concept: Encapsulation & Shared State] ใช้ Static Attributes สื่อสารค่าระหว่างสภาวะ
  */
 public class SettingsController {
 
+    // ===== [Shared State / Singleton Pattern] Attributes =====
     private static final Setting sharedSettingModel = new Setting();
     private static boolean sharedSfxOn = true;
     private static boolean sharedBgmOn = true;
 
-    private Setting settingModel; // Model เก็บสถานะการตั้งค่า
-    private boolean isSfxOn;      // สถานะเปิด/ปิด เสียง SFX
-    private boolean isBgmOn;      // สถานะเปิด/ปิด เพลง BGM
+    // ===== [OOP Concept: Encapsulation] Attributes =====
+    private final Setting settingModel; // Model สำหรับเก็บค่าระดับเสียง
+    private boolean isSfxOn;            // สถานะ เปิด/ปิด เสียง SFX
+    private boolean isBgmOn;            // สถานะ เปิด/ปิด เพลง BGM
 
+    // ===== [OOP Concept: Constructor] =====
+    // คอนสตรัคเตอร์สำหรับกำหนดค่าเริ่มต้นโดยอ้างอิงจาก Shared State
     public SettingsController() {
         this.settingModel = sharedSettingModel;
         this.isSfxOn = sharedSfxOn;
         this.isBgmOn = sharedBgmOn;
     }
 
-    public SettingsController(Setting settingModel) {
-        if (settingModel != null) {
-            this.settingModel = settingModel;
-        } else {
-            this.settingModel = sharedSettingModel;
-        }
-        this.isSfxOn = sharedSfxOn;
-        this.isBgmOn = sharedBgmOn;
-    }
-
-    // บันทึกการตั้งค่าเสียงและอัปเดตลง Setting Model
+    // ===== [MVC Pattern: Business Logic] =====
+    // บันทึกการตั้งค่าเสียง SFX และ BGM พร้อมอัปเดตระดับเสียงลงใน Setting Model
     public void saveSettings(boolean sfxOn, int sfxVol, boolean bgmOn, int bgmVol) {
         this.isSfxOn = sfxOn;
         this.isBgmOn = bgmOn;
         sharedSfxOn = sfxOn;
         sharedBgmOn = bgmOn;
-        if (settingModel != null) {
-            settingModel.setSoundVolume(sfxOn ? sfxVol : 0);
-            settingModel.setMusicVolume(bgmOn ? bgmVol : 0);
-        }
+        settingModel.setSoundVolume(sfxOn ? sfxVol : 0);
+        settingModel.setMusicVolume(bgmOn ? bgmVol : 0);
     }
 
-    // ===== Getters & Setters =====
-    public Setting getSettingModel() {
-        return settingModel;
-    }
-
-    public void setSettingModel(Setting settingModel) {
-        if (settingModel != null) {
-            this.settingModel = settingModel;
-        }
-    }
-
+    // ===== [OOP Concept: Encapsulation - Getters & Setters] =====
+    // ตรวจสอบสถานะเปิด/ปิด เสียง SFX
     public boolean isSfxOn() {
         return isSfxOn;
     }
 
+    // กำหนดสถานะเปิด/ปิด เสียง SFX
     public void setSfxOn(boolean sfxOn) {
         this.isSfxOn = sfxOn;
         sharedSfxOn = sfxOn;
     }
 
+    // ตรวจสอบสถานะเปิด/ปิด เพลง BGM
     public boolean isBgmOn() {
         return isBgmOn;
     }
 
+    // กำหนดสถานะเปิด/ปิด เพลง BGM
     public void setBgmOn(boolean bgmOn) {
         this.isBgmOn = bgmOn;
         sharedBgmOn = bgmOn;
     }
 
+    // ดึงระดับเสียง SFX จาก Setting Model
     public int getSfxVolume() {
-        return settingModel != null ? settingModel.getSoundVolume() : 80;
+        return settingModel.getSoundVolume();
     }
 
+    // ดึงระดับเสียง BGM จาก Setting Model
     public int getBgmVolume() {
-        return settingModel != null ? settingModel.getMusicVolume() : 50;
+        return settingModel.getMusicVolume();
     }
 }
