@@ -15,10 +15,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import com.example.interviewday.R;
 
-// 1. สืบทอดมาจาก DialogFragment เพื่อให้จัดการ Lifecycle และการแสดงผลโปร่งแสงได้ดี
+/*
+ * คลาส PauseDialog
+ * - [OOP Concept: Inheritance] สืบทอดจาก BaseDialog
+ * - [MVC Pattern: View] หน้าต่างป๊อปอัพหยุดเกม แสดงเวลาคงเหลือและปุ่มทางเลือก
+ * - [Event-driven] ดักจับการกดปุ่มแล้วส่ง Event Callback กลับไปหา Activity
+ * - [Multitasking] สลับสถานะหยุด/เล่นเวลาต่อเมื่อเปิดหรือปิด Dialog
+ */
 public class PauseDialog extends BaseDialog {
 
-    // 2. สร้าง Interface (Contract) เพื่อส่ง Event การกดปุ่มกลับไปหา GameStageActivity
+    // [OOP Concept: Abstraction] Interface สัญญาการติดต่อสื่อสารระหว่าง PauseDialog กับ GameStageActivity
     public interface PauseDialogListener {
         void onContinueClicked();
         void onOpenSettingsClicked();
@@ -29,7 +35,7 @@ public class PauseDialog extends BaseDialog {
     private PauseDialogListener listener;
     private String remainingTime = "00:00";
 
-    // 3. Factory Method (newInstance) สำหรับใช้สร้าง Object และรับส่งข้อมูลเวลา
+    // [OOP Concept: Factory Method Pattern] สร้าง Object PauseDialog และส่งข้อมูลเวลาคงเหลือผ่าน Bundle
     public static PauseDialog newInstance(String remainingTime) {
         PauseDialog dialog = new PauseDialog();
         Bundle args = new Bundle();
@@ -38,7 +44,7 @@ public class PauseDialog extends BaseDialog {
         return dialog;
     }
 
-    // 4. เมธอดสำหรับรับตัวดักจับเหตุการณ์ (Listener) จาก Activity
+    // [OOP Concept: Encapsulation] เมธอดสำหรับกำหนด Listener รับเหตุการณ์
     public void setListener(PauseDialogListener listener) {
         this.listener = listener;
     }
@@ -46,10 +52,10 @@ public class PauseDialog extends BaseDialog {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // ดึงไฟล์ XML layout (dialog_pause.xml) มาแสดงผล
+        // ดึงไฟล์ XML layout (activity_pause_dialog.xml) มาแสดงผล
         View view = inflater.inflate(R.layout.activity_pause_dialog, container, false);
 
-        // ปรับแต่งขอบ Dialog ให้พื้นหลังโปร่งแสง (ไม่ติดกรอบสีขาวสี่เหลี่ยมของระบบ Android)
+        // ปรับแต่งขอบ Dialog ให้พื้นหลังโปร่งแสง
         if (getDialog() != null && getDialog().getWindow() != null) {
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -70,7 +76,7 @@ public class PauseDialog extends BaseDialog {
         // แสดงผลตัวเลขเวลาคงเหลือลงบนป้ายนาฬิกา
         tvRemainingTime.setText(remainingTime);
 
-        // 5. ดักจับการกดปุ่มต่างๆ
+        // [Event-driven Programming] ดักจับเหตุการณ์การกดปุ่มต่างๆ แล้วส่ง Event Callback ไปที่ Listener
         btnContinue.setOnClickListener(v -> {
             if (listener != null) listener.onContinueClicked();
             dismiss(); // ปิด Dialog
@@ -94,6 +100,7 @@ public class PauseDialog extends BaseDialog {
         return view;
     }
 
+    // [Event-driven Programming & Multitasking] ดักจับการปิด Dialog เพื่อสั่งเล่นเกม/เวลาต่อโดยอัตโนมัติ
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);

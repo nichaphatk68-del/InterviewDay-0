@@ -8,14 +8,16 @@ import android.widget.TextView;
 import com.example.interviewday.R;
 import com.example.interviewday.controllers.ResultController;
 
-/**
+/*
  * คลาส SummaryActivity
- * หน้าที่: แสดงผลหน้าสรุปคะแนน สถิติเวลาในการเล่นแต่ละด่าน และประเภทฉากจบ (Normal / Special Badge)
- * หลักการ MVC: ประมวลผลและฟอร์แมตข้อมูลเวลาผ่าน ResultController
+ * - [OOP Concept: Inheritance] สืบทอดจาก BaseActivity
+ * - [MVC Pattern: View] หน้าสรุปผลคะแนนและสถิติเวลา ดึงการจัดฟอร์แมตจาก ResultController
+ * - [Event-driven] ดักจับ Event กดปุ่มกลับหน้าหลัก Main Menu
+ * - [Multitasking] รวบรวมสถิติเวลาที่บันทึกไว้จากด่านต่างๆ มาแสดงผลสรุป
  */
 public class SummaryActivity extends BaseActivity {
 
-    // ===== Attributes: UI Views =====
+    // ===== [OOP Concept: Encapsulation] Attributes: UI Views =====
     private ImageView imgEndingTypeBadge; // ป้ายตราสัญลักษณ์ฉากจบ (Normal หรือ Special)
     private TextView tvTotalTime;          // ข้อความแสดงเวลารวมทั้งหมด
     private TextView tvLevel1Time;         // ข้อความแสดงเวลาด่านที่ 1
@@ -23,8 +25,8 @@ public class SummaryActivity extends BaseActivity {
     private TextView tvLevel3Time;         // ข้อความแสดงเวลาด่านที่ 3
     private ImageButton btnMainMenu;       // ปุ่มกดกลับไปหน้า Main Menu
 
-    // ===== Attribute: Controller (MVC) =====
-    private ResultController resultController; // Controller ประมวลผลสถิติและคะแนน
+    // ===== [MVC Pattern: Controller] =====
+    private ResultController resultController; // Controller ประมวลผลสถิติและคะแนนตามหลัก MVC
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,7 @@ public class SummaryActivity extends BaseActivity {
         // 1. ผูก View
         initViews();
 
-        // 2. รับข้อมูลสถิติที่ส่งมาจาก Intent
+        // 2. [Multitasking State Passing] รับข้อมูลสถิติเวลาที่รวบรวมมาจาก Intent
         Intent intent = getIntent();
         String endingType = intent.getStringExtra("ENDING_TYPE"); // "NORMAL" หรือ "SPECIAL"
         String level1Time = intent.getStringExtra("LEVEL1_TIME");
@@ -44,13 +46,13 @@ public class SummaryActivity extends BaseActivity {
         String level3Time = intent.getStringExtra("LEVEL3_TIME");
         String totalTime = intent.getStringExtra("TOTAL_TIME");
 
-        // 3. กำหนดรูปป้าย Normal / Special Ending ผ่าน Controller
+        // 3. [MVC Pattern] กำหนดรูปป้าย Normal / Special Ending ผ่าน Controller
         setupEndingBadge(endingType);
 
-        // 4. แสดงผลเวลาผ่าน Controller
+        // 4. [MVC Pattern] แสดงผลเวลาผ่าน Controller
         displayTimeData(level1Time, level2Time, level3Time, totalTime);
 
-        // 5. ตั้งค่าปุ่มกลับหน้า Main Menu
+        // 5. [Event-driven Programming] ตั้งค่าปุ่มกลับหน้า Main Menu
         btnMainMenu.setOnClickListener(v -> goToMainMenu());
     }
 

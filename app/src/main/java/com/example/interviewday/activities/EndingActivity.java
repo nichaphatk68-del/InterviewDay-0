@@ -11,14 +11,16 @@ import com.example.interviewday.R;
 import com.example.interviewday.controllers.EndingController;
 import com.example.interviewday.models.Ending;
 
-/**
+/*
  * คลาส EndingActivity
- * หน้าที่: แสดงผลฉากจบของเกม (Normal, Special/True, Failed Ending)
- * หลักการ MVC: ดึงข้อมูลภาพพื้นหลัง โลโก้ และเนื้อเรื่องฉากจบมาจาก Ending Model ผ่าน EndingController
+ * - [OOP Concept: Inheritance] สืบทอดจาก BaseActivity
+ * - [MVC Pattern: View] หน้าแสดงฉากจบ (Normal, Special, Failed) ดึงข้อมูลจาก EndingController
+ * - [Event-driven] ดักจับ Event กดปุ่มถัดไป กลับหน้าหลัก หรือเล่นอีกครั้ง
+ * - [Multitasking] จัดการ Intent Flags เพื่อล้าง Task Stack เก่าเมื่อย้อนกลับหน้าหลัก
  */
 public class EndingActivity extends BaseActivity {
 
-    // ===== Attributes: UI Views =====
+    // ===== [OOP Concept: Encapsulation] Attributes: UI Views =====
     private ImageView imgEndingBg;          // ภาพพื้นหลังฉากจบ
     private ImageView imgDialogueBg;        // ภาพพื้นหลังกล่องข้อความ
     private TextView tvEndingDescription;   // ข้อความบรรยายฉากจบ
@@ -30,8 +32,8 @@ public class EndingActivity extends BaseActivity {
     private ImageButton btnRestart;           // ปุ่มเล่นใหม่อีกครั้ง
     private ImageButton btnNext;              // ปุ่มถัดไป
 
-    // ===== Attribute: Controller (MVC) =====
-    private EndingController endingController; // Controller จัดการฉากจบ
+    // ===== [MVC Pattern: Controller] =====
+    private EndingController endingController; // Controller จัดการฉากจบตามหลัก MVC
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +45,8 @@ public class EndingActivity extends BaseActivity {
         String endingType = getIntent().getStringExtra("ENDING_TYPE");
         endingController = new EndingController(endingType);
 
-        setupEndingUI();  // แสดงผล UI ตาม Ending Model
-        setupListeners(); // ตั้งค่าการคลิกปุ่ม
+        setupEndingUI();  // [MVC Pattern] แสดงผล UI ตาม Ending Model
+        setupListeners(); // [Event-driven Programming] ตั้งค่าการคลิกปุ่ม
     }
 
     private void initViews() {

@@ -6,21 +6,23 @@ import android.widget.ImageButton;
 import com.example.interviewday.R;
 import com.example.interviewday.controllers.LevelController;
 
-/**
- * คลาส StageSelectionActivity (View ตามหลัก MVC)
- * หน้าที่: หน้าเลือกด่าน (Stage 1, Stage 2, Stage 3)
- * หลักการ MVC: ตรวจสอบสถานะการปลดล็อกด่านจาก LevelModel ผ่าน LevelController
+/*
+ * คลาส StageSelectionActivity
+ * - [OOP Concept: Inheritance] สืบทอดจาก BaseActivity
+ * - [MVC Pattern: View] หน้าเลือกด่าน ดึงสถานะการปลดล็อกผ่าน LevelController
+ * - [Event-driven] ดักจับ Event การเลือกด่าน และอัปเดตสถานะปุ่มใน onResume()
+ * - [Multitasking] ส่งผ่านหมายเลขด่านไป StoryActivity และจัดการสภาวะแอป
  */
 public class StageSelectionActivity extends BaseActivity {
 
-    // ===== Attributes: UI Views =====
+    // ===== [OOP Concept: Encapsulation] Attributes: UI Views =====
     private ImageButton btnHome;    // ปุ่มย้อนกลับหน้าหลัก
     private ImageButton btnLevel1;  // ปุ่มเลือกด่าน 1
     private ImageButton btnLevel2;  // ปุ่มเลือกด่าน 2
     private ImageButton btnLevel3;  // ปุ่มเลือกด่าน 3
 
-    // ===== Attribute: Controller (MVC) =====
-    private LevelController levelController; // Controller สำหรับควบคุมสถานะและการเลือกด่าน
+    // ===== [MVC Pattern: Controller] =====
+    private LevelController levelController; // Controller สำหรับควบคุมสถานะและการเลือกด่านตามหลัก MVC
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,7 @@ public class StageSelectionActivity extends BaseActivity {
         setupListeners();
     }
 
+    // [Event-driven Programming & Multitasking] Callback เมื่อหน้าจอกลับมาทำงานอีกครั้ง
     @Override
     protected void onResume() {
         super.onResume();

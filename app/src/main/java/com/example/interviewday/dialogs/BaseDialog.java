@@ -12,11 +12,14 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-/**
- * คลาสพื้นฐานสำหรับสร้างหน้าต่างป๊อปอัพเด้งซ้อน
+/*
+ * คลาส BaseDialog
+ * - [OOP Concept: Inheritance] คลาสแม่ (Superclass) สำหรับ Dialog ทุกตัว สืบทอดจาก DialogFragment
+ * - [MVC Pattern: View Component] กำหนดสไตล์ ขนาด และพื้นหลังโปร่งแสงของป๊อปอัพร่วมกัน
  */
 public class BaseDialog extends DialogFragment {
 
+    // [OOP Concept: Polymorphism] Override onCreate เพื่อตั้งค่าสไตล์ Dialog ไม่ให้มี Title Bar
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +31,7 @@ public class BaseDialog extends DialogFragment {
         );
     }
 
+    // [OOP Concept: Polymorphism] Override onStart เพื่อคำนวณและปรับขนาด Dialog เมื่อเริ่มแสดงผล
     @Override
     public void onStart() {
         super.onStart();

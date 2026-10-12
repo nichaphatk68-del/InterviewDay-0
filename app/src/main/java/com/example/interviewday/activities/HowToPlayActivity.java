@@ -4,11 +4,18 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 import com.example.interviewday.R;
 
+/*
+ * คลาส HowToPlayActivity
+ * - [OOP Concept: Inheritance] สืบทอดจาก BaseActivity
+ * - [MVC Pattern: View] หน้าคู่มือแนะนำวิธีเล่นเกม
+ * - [Event-driven] ดักจับ Event กดปุ่ม Home เพื่อปิดหน้านี้
+ * - [Multitasking] คืนพื้นที่หน่วยความจำและย้อนกลับ Activity เดิมใน Back Stack
+ */
 public class HowToPlayActivity extends BaseActivity {
-    //ATTRIBUTE
+
+    // [OOP Concept: Encapsulation] Attributes: UI View
     private ImageButton btnHome; // อ้างอิงถึงปุ่มกลับหน้าหลัก
 
-    //METHODS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,7 +24,7 @@ public class HowToPlayActivity extends BaseActivity {
         // 1. ผูกปุ่มกดใน XML เข้ากับ Attribute
         initViews();
 
-        // 2. ตั้งค่าเหตุการณ์เมื่อผู้เล่นกดปุ่ม
+        // 2. [Event-driven Programming] ตั้งค่าเหตุการณ์เมื่อผู้เล่นกดปุ่ม
         setupListeners();
     }
 

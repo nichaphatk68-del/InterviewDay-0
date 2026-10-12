@@ -16,21 +16,23 @@ import com.example.interviewday.R;
 import com.example.interviewday.controllers.BackgroundMusicManager;
 import com.example.interviewday.controllers.SettingsController;
 
-/**
+/*
  * คลาส SettingsDialog
- * หน้าที่: หน้าต่างป๊อปอัพปรับตั้งค่าเสียง BGM / SFX
- * หลักการ MVC: ส่งผ่านข้อมูลและบันทึกสภาวะตั้งค่าไปยัง Setting Model ผ่าน SettingsController
+ * - [OOP Concept: Inheritance] สืบทอดจาก BaseDialog
+ * - [MVC Pattern: View] หน้าต่างปรับตั้งค่าเสียง SFX/BGM ทำงานร่วมกับ SettingsController
+ * - [Event-driven] ดักจับการกดปุ่มสลับเสียงและเลื่อน SeekBar
+ * - [Multitasking] สั่งปรับเสียงเพลง BGM ในฉากหลังทันทีโดยไม่ขัดจังหวะ UI
  */
 public class SettingsDialog extends BaseDialog {
 
-    // ===== Interface Contract =====
+    // [OOP Concept: Abstraction] Interface สัญญาส่งผ่านข้อมูลระดับเสียง BGM/SFX กลับไปยัง Activity
     public interface SettingsDialogListener {
         void onSaveSettings(boolean sfxOn, int sfxVol, boolean bgmOn, int bgmVol);
         void onCancelSettings();
     }
 
     private SettingsDialogListener listener;
-    private SettingsController settingsController; // Controller จัดการการตั้งค่า
+    private SettingsController settingsController; // [MVC Pattern: Controller] ตัวกลางควบคุมสภาวะการตั้งค่า
 
     private ImageButton btnSfxOn;
     private ImageButton btnSfxOff;

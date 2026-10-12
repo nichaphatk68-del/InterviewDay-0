@@ -6,32 +6,34 @@ import android.widget.TextView;
 import com.example.interviewday.R;
 import com.example.interviewday.controllers.NotebookController;
 
-/**
+/*
  * คลาส NotebookActivity
- * หน้าที่: แสดงผลหน้าสมุดโน้ตรวบรวมคำศัพท์ และรายการไอเท็มที่ค้นพบ
- * หลักการ MVC: ดึงข้อมูลข้อความฝั่งซ้ายและขวามาจาก NotebookModel ผ่าน NotebookController
+ * - [OOP Concept: Inheritance] สืบทอดจาก BaseActivity
+ * - [MVC Pattern: View] หน้าสมุดโน้ตแสดงคำศัพท์และไอเท็ม ดึงข้อมูลจาก NotebookController
+ * - [Event-driven] ดักจับ Event กดปุ่ม Home เพื่อย้อนกลับ
+ * - [Multitasking] ซิงค์ข้อมูลไอเท็มที่ค้นพบจากด่านต่างๆ มาแสดงผล
  */
 public class NotebookActivity extends BaseActivity {
 
-    // ===== Attributes: UI Views =====
+    // ===== [OOP Concept: Encapsulation] Attributes: UI Views =====
     private ImageButton btnHome;      // ปุ่มกดกลับหน้าหลัก (Main Menu)
     private TextView tvContentLeft;   // พื้นที่แสดงข้อความ/คำศัพท์ บนกระดาษฝั่งซ้าย
     private TextView tvContentRight;  // พื้นที่แสดงข้อความ/รายการไอเท็ม บนกระดาษฝั่งขวา
 
-    // ===== Attribute: Controller (MVC) =====
-    private NotebookController notebookController; // Controller สำหรับดึงข้อมูลสมุดโน้ต
+    // ===== [MVC Pattern: Controller] =====
+    private NotebookController notebookController; // Controller สำหรับจัดการข้อมูลสมุดโน้ตตามหลัก MVC
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notebook);
 
-        // สร้าง Object Controller
+        // [OOP Concept: Instantiation] สร้าง Object Controller
         notebookController = new NotebookController();
 
         initViews();          // 1. ผูก View
-        setupListeners();     // 2. ตั้งค่าการคลิกปุ่ม
-        loadNotebookData();    // 3. โหลดข้อมูลลงหน้ากระดาษผ่าน Controller
+        setupListeners();     // 2. [Event-driven Programming] ตั้งค่าการคลิกปุ่ม
+        loadNotebookData();   // 3. [MVC Pattern] โหลดข้อมูลลงหน้ากระดาษผ่าน Controller
     }
 
     // ผูก View จาก XML เข้ากับ Attribute

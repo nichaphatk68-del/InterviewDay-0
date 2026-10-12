@@ -4,24 +4,29 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class BaseActivity extends AppCompatActivity /*กำหนดให้คลาสนี้เป็นหน้าจอ Activity ตามมาตรฐาน Android*/ {
+/*
+ * คลาส BaseActivity
+ * - [OOP Concept: Inheritance] คลาสแม่สำหรับทุก Activity สืบทอดจาก AppCompatActivity
+ * - [OOP Concept: Encapsulation & Polymorphism] ซ่อนระบบ hideSystemUI() และ Override onCreate/onResume
+ * - [Multitasking] ซ่อนแถบระบบอัตโนมัติเมื่อพับจอ/สลับแอปแล้วกลับเข้ามาใหม่
+ */
+public class BaseActivity extends AppCompatActivity {
 
-    // เมธอดที่ 1: ทำงานเมื่อสร้าง Activity ขึ้นมาครั้งแรก
+    // [OOP Concept: Polymorphism] Overriding onCreate จาก Lifecycle ของ AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hideSystemUI(); // เรียกฟังก์ชันซ่อนแถบระบบทันทีที่เริ่มสร้างหน้าจอ
     }
 
-    // เมธอดที่ 2: ทำงานเมื่อผู้เล่นพับจอแล้วเปิดกลับเข้ามาใหม่
+    // [OOP Concept: Polymorphism] Overriding onResume เพื่อจัดการเมื่อผู้เล่นกลับมาที่หน้าจอนี้
     @Override
     protected void onResume() {
         super.onResume();
-        hideSystemUI(); // ซ่อนแถบระบบอีกครั้งหากผู้เล่นพับจอแล้วกลับเข้ามาใหม่
+        hideSystemUI(); // ซ่อนแถบระบบอีกครั้งหากผู้เล่นพับจอ/สลับแอปแล้วกลับเข้ามาใหม่
     }
 
-    // เมธอดที่ 3: เมธอดปรับการแสดงผลระบบให้ซ่อน Status Bar และ Navigation Bar
-    // ฟังก์ชันสำหรับซ่อน แถบสถานะ (เวลา/แบต) และ แถบปุ่มกด Android ด้านล่าง
+    // [OOP Concept: Encapsulation] เมธอดส่วนตัวสำหรับซ่อน Status Bar และ Navigation Bar
     private void hideSystemUI() {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(

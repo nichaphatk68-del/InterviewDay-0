@@ -9,20 +9,22 @@ import com.example.interviewday.R;
 import com.example.interviewday.controllers.LevelController;
 import com.example.interviewday.models.Level;
 
-/**
+/*
  * คลาส StoryActivity
- * หน้าที่: แสดงผลภาพพื้นหลังและเนื้อเรื่องเกริ่นนำประจำแต่ละด่านก่อนเข้าเล่นเกม
- * หลักการ MVC: โหลดเนื้อเรื่องภาพและข้อความมาจาก Level Model ผ่าน LevelController
+ * - [OOP Concept: Inheritance] สืบทอดจาก BaseActivity
+ * - [MVC Pattern: View] หน้าแสดงเกริ่นนำเนื้อเรื่องประจำด่าน ดึงข้อมูลจาก LevelController
+ * - [Event-driven] ดักจับการแตะกล่องข้อความเพื่อเริ่มด่านเล่นเกม
+ * - [Multitasking] ส่งหมายเลขด่านไปยัง GameStageActivity เพื่อเริ่มนับเวลา
  */
 public class StoryActivity extends BaseActivity {
 
-    // ===== Attributes: UI Views =====
+    // ===== [OOP Concept: Encapsulation] Attributes: UI Views =====
     private ImageView imgBackground;         // ภาพพื้นหลังประจำด่าน
     private TextView tvStoryText;            // ข้อความบรรยายเนื้อเรื่องเกริ่นนำ
     private ConstraintLayout layoutStoryBox; // กล่องข้อความ (สำหรับแตะเพื่อไปต่อเข้าเล่นเกม)
 
     private int currentStage = 1;            // หมายเลขด่านปัจจุบัน
-    private LevelController levelController;   // Controller สำหรับจัดการ Level และ Model
+    private LevelController levelController; // [MVC Pattern: Controller] ตัวกลางจัดการข้อมูล Level และ Model
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +38,10 @@ public class StoryActivity extends BaseActivity {
         // 2. ผูก View
         initViews();
 
-        // 3. โหลดเนื้อหาและรูปภาพประจำด่านจาก Model ผ่าน Controller
+        // 3. [MVC Pattern] โหลดเนื้อหาและรูปภาพประจำด่านจาก Model ผ่าน Controller
         displayStoryContent();
 
-        // 4. ตั้งค่า Event เมื่อแตะกล่องข้อความเพื่อเข้าสู่เกม
+        // 4. [Event-driven Programming] ตั้งค่า Event เมื่อแตะกล่องข้อความเพื่อเข้าสู่เกม
         setupListeners();
     }
 

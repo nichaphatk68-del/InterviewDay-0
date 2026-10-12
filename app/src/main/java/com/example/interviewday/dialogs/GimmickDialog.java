@@ -23,28 +23,29 @@ import com.example.interviewday.controllers.GimmickController;
 
 import java.util.ArrayList;
 
-/**
+/*
  * คลาส GimmickDialog
- * หน้าที่: แสดงผล UI สำหรับมินิเกมตอบคำถามภาษาอังกฤษ (ปุ่มฟังเสียง, ไมโครโฟนตอบคำถาม, กล่องโน้ต)
- * หลักการ MVC: ดึงข้อมูลและส่งคำสั่งผ่าน GimmickController เท่านั้น ห้ามฮาร์ดโค้ดข้อมูลโจทย์หรือเฉลยใน View
+ * - [OOP Concept: Inheritance] สืบทอดมาจาก BaseDialog
+ * - [MVC Pattern: View] หน้าต่างตอบคำถามมินิเกม ส่งต่อลอจิกไปให้ GimmickController
+ * - [Event-driven] ดักจับ Event กดฟัง/พูด และ Event ผลลัพธ์อัดเสียง (Speech-to-Text)
+ * - [Multitasking] เรียก Intent แปลงเสียงพูดแบบ Asynchronous โดยไม่บล็อก UI
  */
 public class GimmickDialog extends BaseDialog {
 
-    // ===== Attributes: UI Views =====
-    private ImageView ivQuestionBadge;    // โลโก้แสดงหมายเลขข้อ (QUESTION 1, 2, 3)
-    private TextView tvInstruction;       // ข้อความคำแนะนำประจำด่าน
-    private LinearLayout btnListen;       // ปุ่มกดฟังเสียงโจทย์ภาษาอังกฤษ
-    private LinearLayout btnSpeak;        // ปุ่มกดเปิดไมโครโฟนเพื่อพูดตอบ
-    private TextView tvPlayerAnswer;      // แสดงข้อความภาษาอังกฤษที่ผู้เล่นพูดออกเสียง
-    private ImageButton btnNextInside;    // ปุ่มถัดไป (สำหรับข้อ 1 และ 2)
-    private ImageButton btnNextOutside;   // ปุ่มถัดไป (สำหรับข้อ 3)
-    private View cardNotepad;             // การ์ดแสดงสมุดโน้ตฝั่งขวา (ใช้ในด่าน 3)
+    // [OOP Concept: Encapsulation] UI Views ส่วนตัว
+    private ImageView ivQuestionBadge;    // โลโก้แสดงหมายเลขข้อ
+    private TextView tvInstruction;       // ข้อความคำแนะนำ
+    private LinearLayout btnListen;       // ปุ่มกดฟังเสียงโจทย์
+    private LinearLayout btnSpeak;        // ปุ่มกดเปิดไมค์พูดตอบ
+    private TextView tvPlayerAnswer;      // ข้อความที่ผู้เล่นพูดออกเสียง
+    private ImageButton btnNextInside;    // ปุ่มถัดไป (ข้อ 1-2)
+    private ImageButton btnNextOutside;   // ปุ่มถัดไป (ข้อ 3)
+    private View cardNotepad;             // สมุดโน้ตฝั่งขวา (ด่าน 3)
 
-    // ===== Attribute: Controller (MVC) =====
-    private GimmickController gimmickController; // ตัวกลางควบคุมลอจิกมินิเกม
+    // [MVC Pattern: Controller] ตัวควบคุมลอจิกมินิเกม
+    private GimmickController gimmickController;
 
-    // ===== Speech-to-Text Launcher =====
-    // ระบบเปิด Activity รับเสียงพูดของผู้เล่น แล้วแปลงเป็นข้อความ String
+    // [Event-driven & Multitasking] Callback รับผลลัพธ์การอัดเสียงพูดแบบ Asynchronous
     private final ActivityResultLauncher<Intent> speechLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -52,7 +53,7 @@ public class GimmickDialog extends BaseDialog {
                     ArrayList<String> matches = result.getData().getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     if (matches != null && !matches.isEmpty()) {
                         String spokenText = matches.get(0);
-                        onSpeechResult(spokenText); // ส่งข้อความที่พูดได้ไปประมวลผลต่อ
+                        onSpeechResult(spokenText); // ส่งคำตอบที่พูดไปตรวจ
                     }
                 }
             }
