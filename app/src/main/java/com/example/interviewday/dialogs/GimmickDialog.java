@@ -159,9 +159,11 @@ public class GimmickDialog extends BaseDialog {
         if (tvPlayerAnswer != null) {
             tvPlayerAnswer.setText("กดปุ่มไมค์แล้วเริ่มพูดคำตอบ...");
         }
+        //ซ่อนปุ่มถัดไปภายใน Dialog
         if (btnNextInside != null) {
             btnNextInside.setVisibility(View.GONE);
         }
+        //ซ่อนปุ่มถัดไปภายนอก Dialog
         if (btnNextOutside != null) {
             btnNextOutside.setVisibility(View.GONE);
         }
@@ -173,7 +175,7 @@ public class GimmickDialog extends BaseDialog {
         if (tvPlayerAnswer != null) {
             tvPlayerAnswer.setText(recognizedText);
         }
-
+        // เตรียม Controller สำหรับประมวลผล
         if (gimmickController == null) {
             gimmickController = new GimmickController(1, 0);
         }

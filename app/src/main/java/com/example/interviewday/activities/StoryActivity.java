@@ -44,7 +44,7 @@ public class StoryActivity extends BaseActivity {
         // 4. [Event-driven Programming] ตั้งค่า Event เมื่อแตะกล่องข้อความเพื่อเข้าสู่เกม
         setupListeners();
     }
-
+    //ทำหน้าที่เชื่อมโยงตัวแปรภาษา Java เข้ากับองค์ประกอบ UI ใน XML Layout
     private void initViews() {
         imgBackground = findViewById(R.id.imgBackground);
         tvStoryText = findViewById(R.id.tvStoryText);
@@ -64,11 +64,11 @@ public class StoryActivity extends BaseActivity {
         // แตะที่กล่องข้อความเพื่อเริ่มด่านเล่นเกม (GameStageActivity)
         layoutStoryBox.setOnClickListener(v -> startGameStage());
     }
-
+    //นำทางสลับหน้า Activity
     private void startGameStage() {
-        Intent intent = new Intent(StoryActivity.this, GameStageActivity.class);
-        intent.putExtra("STAGE_NUMBER", currentStage);
-        startActivity(intent);
+        Intent intent = new Intent(StoryActivity.this, GameStageActivity.class);//เพื่อพาผู้เล่นจาก StoryActivity ไปยังหน้าเล่นเกมหลัก GameStageActivity
+        intent.putExtra("STAGE_NUMBER", currentStage);//แนบหมายเลขด่านปัจจุบัน ส่งไปด้วย เพื่อให้หน้าเกมโหลดด่านได้ถูกต้อง
+        startActivity(intent); //แล้วปิดหน้าเนื้อเรื่อง
         finish();
     }
 }

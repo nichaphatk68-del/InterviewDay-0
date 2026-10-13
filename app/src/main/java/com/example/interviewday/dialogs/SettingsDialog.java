@@ -18,57 +18,83 @@ import com.example.interviewday.controllers.SettingsController;
 
 /*
  * คลาส SettingsDialog
- * - [OOP Concept: Inheritance] สืบทอดจาก BaseDialog
- * - [MVC Pattern: View] หน้าต่างปรับตั้งค่าเสียง SFX/BGM ทำงานร่วมกับ SettingsController
- * - [Event-driven] ดักจับการกดปุ่มสลับเสียงและเลื่อน SeekBar
+ * - หน้าต่างป๊อปอัพ (Dialog) สำหรับตั้งค่าเสียงในเกม ทั้งเสียงเอฟเฟกต์ (SFX) และเพลงประกอบ (BGM)
+ * - [OOP Concept: Inheritance] สืบทอดมาจาก BaseDialog
+ * - [MVC Pattern: View] ทำหน้าที่แสดงผล UI หน้าตั้งค่า และรับการตอบสนองจากผู้ใช้
+ * - [Event-driven] ทำงานเมื่อผู้ใช้กดปุ่ม หรือเลื่อนแถบปรับระดับเสียง (SeekBar)
  * - [Multitasking] สั่งปรับเสียงเพลง BGM ในฉากหลังทันทีโดยไม่ขัดจังหวะ UI
  */
 public class SettingsDialog extends BaseDialog {
 
-    // [OOP Concept: Abstraction] Interface สัญญาส่งผ่านข้อมูลระดับเสียง BGM/SFX กลับไปยัง Activity
+    /**
+     * [OOP Concept: Abstraction / Interface]
+     * อินเทอร์เฟซสำหรับส่งข้อมูลผลการตั้งค่าระดับเสียง BGM/SFX กลับไปยัง Activity หรือ Fragment ที่เปิด Dialog นี้
+     */
     public interface SettingsDialogListener {
+        // เรียกเมื่อกดปุ่มตกลง (บันทึกค่า) พร้อมส่งค่าสถานะ SFX และ BGM กลับไป
         void onSaveSettings(boolean sfxOn, int sfxVol, boolean bgmOn, int bgmVol);
+        // เรียกเมื่อกดปุ่มยกเลิก
         void onCancelSettings();
     }
 
+    // ตัวแปรเก็บ Listener สำหรับส่งเหตุการณ์กลับไปยัง Activity ที่เรียกใช้
     private SettingsDialogListener listener;
-    private SettingsController settingsController; // [MVC Pattern: Controller] ตัวกลางควบคุมสภาวะการตั้งค่า
 
-    private ImageButton btnSfxOn;
-    private ImageButton btnSfxOff;
-    private ImageButton btnBgmOn;
-    private ImageButton btnBgmOff;
-    private SeekBar seekbarSfx;
-    private SeekBar seekbarBgm;
+    // [MVC Pattern: Controller] ตัวกลางควบคุมสภาวะและจัดการตรรกะการตั้งค่า
+    private SettingsController settingsController;
 
+    // ส่วนประกอบของหน้าจอ (UI Components)
+    private ImageButton btnSfxOn;   // ปุ่มเปิดเสียงเอฟเฟกต์ (SFX)
+    private ImageButton btnSfxOff;  // ปุ่มปิดเสียงเอฟเฟกต์ (SFX)
+    private ImageButton btnBgmOn;   // ปุ่มเปิดเพลงประกอบ (BGM)
+    private ImageButton btnBgmOff;  // ปุ่มปิดเพลงประกอบ (BGM)
+    private SeekBar seekbarSfx;     // แถบสไลด์ปรับระดับเสียง SFX
+    private SeekBar seekbarBgm;     // แถบสไลด์ปรับระดับเสียง BGM
+
+    /**
+     * Static Factory Method สำหรับสร้าง Instance ใหม่ของ SettingsDialog
+     */
     public static SettingsDialog newInstance() {
         return new SettingsDialog();
     }
 
+    /**
+     * เรียกเมื่อเริ่มต้นสร้าง Dialog
+     * ใช้เตรียมวัตถุที่ไม่เกี่ยวกับ UI เช่น SettingsController
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // ถ้ายังไม่มี Controller ให้สร้างขึ้นมาใหม่
         if (settingsController == null) {
             settingsController = new SettingsController();
         }
     }
 
+    /**
+     * กำหนด Listener เพื่อรอรับ Event จาก Dialog นี้ (เช่น จาก Activity หลัก)
+     */
     public void setListener(SettingsDialogListener listener) {
         this.listener = listener;
     }
 
+    /**
+     * เรียกเมื่อสร้าง UI ของ Dialog
+     * ทำหน้าที่ผูก View, กำหนดค่าเริ่มต้น และตั้งค่า Event Listener บนปุ่มและ SeekBar ต่างๆ
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // ดึง Layout XML มาแสดงผล
         View view = inflater.inflate(R.layout.activity_settings_dialog, container, false);
 
-        // ปรับแต่งให้พื้นหลังป๊อปอัพโปร่งแสง
+        // ปรับแต่งให้พื้นหลังป๊อปอัพโปร่งแสง และไม่มีแถบ Title ด้านบน
         if (getDialog() != null && getDialog().getWindow() != null) {
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         }
 
-        // ผูก View
+        // ผูกตัวแปรเข้ากับ View ใน Layout XML
         btnSfxOn = view.findViewById(R.id.btnSfxOn);
         btnSfxOff = view.findViewById(R.id.btnSfxOff);
         btnBgmOn = view.findViewById(R.id.btnBgmOn);
@@ -78,7 +104,7 @@ public class SettingsDialog extends BaseDialog {
         ImageButton btnCancel = view.findViewById(R.id.btnCancel);
         ImageButton btnOk = view.findViewById(R.id.btnOk);
 
-        // โหลดค่าความดังเสียงเริ่มต้นจาก Controller
+        // โหลดค่าความดังเสียงและสถานะเริ่มต้นจาก Controller มาแสดงบน UI
         if (settingsController != null) {
             seekbarSfx.setProgress(settingsController.getSfxVolume());
             seekbarBgm.setProgress(settingsController.getBgmVolume());
@@ -86,57 +112,60 @@ public class SettingsDialog extends BaseDialog {
             updateBgmButtonsUI(settingsController.isBgmOn());
         }
 
-        // สลับสถานะเปิด/ปิด SFX
+        // --- สลับสถานะเปิด/ปิด SFX ---
         btnSfxOn.setOnClickListener(v -> {
             if (settingsController != null) settingsController.setSfxOn(true);
-            updateSfxButtonsUI(true);
-            applyAndSave();
+            updateSfxButtonsUI(true); // ปรับความโปร่งใสของปุ่มให้เห็นว่าเปิดอยู่
+            applyAndSave();           // บันทึกและปรับปรุงเสียงทันที
         });
         btnSfxOff.setOnClickListener(v -> {
             if (settingsController != null) settingsController.setSfxOn(false);
-            updateSfxButtonsUI(false);
-            applyAndSave();
+            updateSfxButtonsUI(false); // ปรับความโปร่งใสของปุ่มให้เห็นว่าปิดอยู่
+            applyAndSave();            // บันทึกและปรับปรุงเสียงทันที
         });
 
-        // สลับสถานะเปิด/ปิด BGM
+        // --- สลับสถานะเปิด/ปิด BGM ---
         btnBgmOn.setOnClickListener(v -> {
             if (settingsController != null) settingsController.setBgmOn(true);
-            updateBgmButtonsUI(true);
-            applyAndSave();
+            updateBgmButtonsUI(true); // ปรับความโปร่งใสของปุ่ม BGM ให้เห็นว่าเปิดอยู่
+            applyAndSave();           // บันทึกและปรับปรุงเสียงเพลง BGM ทันที
         });
         btnBgmOff.setOnClickListener(v -> {
             if (settingsController != null) settingsController.setBgmOn(false);
-            updateBgmButtonsUI(false);
-            applyAndSave();
+            updateBgmButtonsUI(false); // ปรับความโปร่งใสของปุ่ม BGM ให้เห็นว่าปิดอยู่
+            applyAndSave();            // บันทึกและปรับปรุงเสียงเพลง BGM ทันที
         });
 
-        // ติดตามการเลื่อน SeekBar
+        // --- ติดตามการเลื่อนแถบระดับเสียง SFX ---
         seekbarSfx.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // บันทึกค่าใหม่ทันทีเมื่อผู้ใช้เลื่อนแถบ
                 if (fromUser) applyAndSave();
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
+        // --- ติดตามการเลื่อนแถบระดับเสียง BGM ---
         seekbarBgm.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // บันทึกค่าใหม่และปรับระดับเสียงเพลงทันทีเมื่อผู้ใช้เลื่อนแถบ
                 if (fromUser) applyAndSave();
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        // ปุ่มยกเลิก
+        // --- ปุ่มยกเลิก ---
         btnCancel.setOnClickListener(v -> {
             applyAndSave();
             if (listener != null) listener.onCancelSettings();
-            dismiss();
+            dismiss(); // ปิด Dialog
         });
 
-        // ปุ่มตกลง/บันทึกการตั้งค่า
+        // --- ปุ่มตกลง/บันทึกการตั้งค่า ---
         btnOk.setOnClickListener(v -> {
             applyAndSave();
             if (listener != null) {
@@ -144,14 +173,19 @@ public class SettingsDialog extends BaseDialog {
                 boolean bgmOn = settingsController != null && settingsController.isBgmOn();
                 int sfxVol = seekbarSfx.getProgress();
                 int bgmVol = seekbarBgm.getProgress();
+                // ส่งข้อมูลการตั้งค่าล่าสุดกลับไปยัง Activity
                 listener.onSaveSettings(sfxOn, sfxVol, bgmOn, bgmVol);
             }
-            dismiss();
+            dismiss(); // ปิด Dialog
         });
 
         return view;
     }
 
+    /**
+     * อัปเดตความโปร่งใส (Alpha) ของปุ่ม SFX On/Off
+     * ปุ่มที่ถูกเลือกจะมี Alpha = 1.0 (สว่างชัด) และปุ่มที่ไม่เลือกจะมี Alpha = 0.4 (จางลง)
+     */
     private void updateSfxButtonsUI(boolean isOn) {
         if (btnSfxOn != null && btnSfxOff != null) {
             btnSfxOn.setAlpha(isOn ? 1.0f : 0.4f);
@@ -159,6 +193,10 @@ public class SettingsDialog extends BaseDialog {
         }
     }
 
+    /**
+     * อัปเดตความโปร่งใส (Alpha) ของปุ่ม BGM On/Off
+     * ปุ่มที่ถูกเลือกจะมี Alpha = 1.0 (สว่างชัด) และปุ่มที่ไม่เลือกจะมี Alpha = 0.4 (จางลง)
+     */
     private void updateBgmButtonsUI(boolean isOn) {
         if (btnBgmOn != null && btnBgmOff != null) {
             btnBgmOn.setAlpha(isOn ? 1.0f : 0.4f);
@@ -166,6 +204,10 @@ public class SettingsDialog extends BaseDialog {
         }
     }
 
+    /**
+     * อ่านค่าจาก UI ไปบันทึกลง Controller
+     * พร้อมอัปเดตเสียงเพลง BGM ใน BackgroundMusicManager ให้มีผลทันทีแบบ Real-time
+     */
     private void applyAndSave() {
         if (settingsController != null && seekbarSfx != null && seekbarBgm != null) {
             boolean sfxOn = settingsController.isSfxOn();
@@ -173,11 +215,17 @@ public class SettingsDialog extends BaseDialog {
             int sfxVol = seekbarSfx.getProgress();
             int bgmVol = seekbarBgm.getProgress();
 
+            // บันทึกค่าการตั้งค่า
             settingsController.saveSettings(sfxOn, sfxVol, bgmOn, bgmVol);
+            // ปรับเสียง BGM ทันที
             BackgroundMusicManager.setBgmState(bgmOn, bgmVol);
         }
     }
 
+    /**
+     * เรียกเมื่อ Dialog ถูกปิดลง (เช่น การแตะนอกพื้นที่หรือกดปุ่ม Back)
+     * เพื่อให้แน่ใจว่าค่าการตั้งค่าล่าสุดถูกบันทึกไว้เสมอ
+     */
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);

@@ -48,7 +48,7 @@ public class EndingActivity extends BaseActivity {
         setupEndingUI();  // [MVC Pattern] แสดงผล UI ตาม Ending Model
         setupListeners(); // [Event-driven Programming] ตั้งค่าการคลิกปุ่ม
     }
-
+    //ผูก XML เข้ากับ Attribute
     private void initViews() {
         imgEndingBg = findViewById(R.id.imgEndingBg);
         imgDialogueBg = findViewById(R.id.imgDialogueBg);
@@ -89,13 +89,14 @@ public class EndingActivity extends BaseActivity {
             layoutFailedButtons.setVisibility(View.VISIBLE);
         }
     }
-
+    //ผูกเหตุการณ์การคลิกปุ่ม (OnClickListener) ให้กับปุ่มกดทั้ง 3 ปุ่มในหน้าฉากจบ
     private void setupListeners() {
         btnNext.setOnClickListener(v -> goToSummaryOrMenu());
         btnMainMenu.setOnClickListener(v -> goToMainMenu());
         btnRestart.setOnClickListener(v -> restartGame());
     }
 
+    //ตรวจสอบประเภทฉากจบแล้วเลือกหน้าที่จะพาผู้เล่นไปต่อ
     private void goToSummaryOrMenu() {
         String endingType = endingController != null ? endingController.getEndingType() : "NORMAL";
         if ("FAILED".equals(endingType) || "FAILED_ENDING".equals(endingType)) {
@@ -111,6 +112,7 @@ public class EndingActivity extends BaseActivity {
         }
     }
 
+    //สลับกลับไปหน้าเมนูหลัก ล้าง Activity เก่าๆ ทั้งหมดที่เคยเปิดค้างไว้ใน Back Stack ออก ช่วยคืนหน่วยความจำและป้องกันไม่ให้ผู้เล่นกดปุ่ม Back ย้อนกลับมาหน้าฉากจบได้
     private void goToMainMenu() {
         Intent intent = new Intent(this, MainMenuActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -118,6 +120,7 @@ public class EndingActivity extends BaseActivity {
         finish();
     }
 
+    //เริ่มต้นเล่นเกมใหม่อีกครั้งทันที ตั้งค่าให้เกมเริ่มนับตั้งแต่ด่านแรก ใส่ Intent Flags เพื่อล้าง Stack หน้าจอเก่าทิ้งทั้งหมด
     private void restartGame() {
         Intent intent = new Intent(this, GameStageActivity.class);
         intent.putExtra("STAGE_NUMBER", 1);

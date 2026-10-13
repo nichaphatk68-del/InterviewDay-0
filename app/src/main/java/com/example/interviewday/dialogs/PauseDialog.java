@@ -24,6 +24,7 @@ import com.example.interviewday.R;
 public class PauseDialog extends BaseDialog {
 
     // [OOP Concept: Abstraction] Interface สัญญาการติดต่อสื่อสารระหว่าง PauseDialog กับ GameStageActivity
+    //ประกาศชุดเมธอดต้นแบบ (Abstract Methods) 4 เมธอดเพื่อเป็นสัญญาในการส่ง Event เมื่อมีการกดปุ่มต่างๆ บน Dialog
     public interface PauseDialogListener {
         void onContinueClicked();
         void onOpenSettingsClicked();
@@ -31,15 +32,16 @@ public class PauseDialog extends BaseDialog {
         void onRestartClicked();
     }
 
-    private PauseDialogListener listener;
-    private String remainingTime = "00:00";
+    private PauseDialogListener listener; //ตัวแปรถือ Reference ของ Listener เพื่อใช้เรียกส่ง Event กลับไปยัง Activity ที่เรียกใช้
+    private String remainingTime = "00:00"; //ตัวแปรเก็บข้อความเวลาถอยหลังคงเหลือสำหรับนำไปแสดงผลบนหน้าต่าง Dialog
 
     // [OOP Concept: Factory Method Pattern] สร้าง Object PauseDialog และส่งข้อมูลเวลาคงเหลือผ่าน Bundle
+    //ประกาศเมธอดแบบ static เพื่อให้คลาสอื่น สามารถเรียกใช้งานเพื่อสร้าง Dialog ได้ทันที
     public static PauseDialog newInstance(String remainingTime) {
         PauseDialog dialog = new PauseDialog();
         Bundle args = new Bundle();
-        args.putString("REMAINING_TIME", remainingTime);
-        dialog.setArguments(args);
+        args.putString("REMAINING_TIME", remainingTime);//สร้างวัตถุ Bundle ซึ่งเป็นถุงเก็บข้อมูล Key-Value ของ Android แล้วฝากข้อความเวลาคงเหลือไว้ภายใต้ Key "REMAINING_TIME"
+        dialog.setArguments(args);// ผูกถุงข้อมูล Bundle เข้ากับตัว Dialog เพื่อให้ Dialog นำไปแกะใช้แสดงผล
         return dialog;
     }
 

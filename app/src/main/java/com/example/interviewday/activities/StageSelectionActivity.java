@@ -75,7 +75,7 @@ public class StageSelectionActivity extends BaseActivity {
         });
     }
 
-    // สั่งเปิดหน้าเล่าเนื้อเรื่องประจำด่าน
+    // เปิดหน้าเล่าเนื้อเรื่องประจำด่าน
     private void openGameStage(int stageNumber) {
         levelController.selectStage(stageNumber);
         Intent intent = new Intent(StageSelectionActivity.this, StoryActivity.class);

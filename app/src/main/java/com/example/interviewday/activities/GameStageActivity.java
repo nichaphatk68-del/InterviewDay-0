@@ -49,24 +49,26 @@ public class GameStageActivity extends BaseActivity {
 
     // Resource IDs และข้อมูลเก็บจาก Model ผ่าน Controller
     private int colorRes1, colorRes2, colorRes3;
-
+    //ทำหน้าที่ตั้งค่าและเตรียมความพร้อมของด่านเมื่อหน้าจอนี้ถูกเปิดขึ้นมา
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game_stage);
+        setContentView(R.layout.activity_game_stage);//สั่งวาด Layout
 
+        //ดึงหมายเลขด่านที่ส่งมาจากหน้าก่อนหน้า (ถ้าไม่มีส่งมา จะใช้ค่าเริ่มต้นเป็นด่าน 1)
         int stageNumber = getIntent().getIntExtra("STAGE_NUMBER", 1);
         if (stageNumber == 1) {
-            GameSessionManager.resetSession();
+            GameSessionManager.resetSession();//ถ้าผู้เล่นเริ่มด่านที่ 1 จะทำการรีเซ็ตสถิติเวลาและข้อมูลการเล่นใหม่ทั้งหมดก่อน
         }
-        gameStageController = new GameStageController(stageNumber);
+        gameStageController = new GameStageController(stageNumber);//สร้าง Controller เพื่อจัดการข้อมูลของด่าน
 
+        // ทำการผูก View จาก XML
         initViews();
         renderStageUI();
-        setupItemClickListeners();
+        setupItemClickListeners();// ทำการจัดการการคลิกปุ่ม
         setupTimer();
     }
-
+    //ทำหน้าที่ผูกองค์ประกอบหน้าจอจากไฟล์ XML มาใส่ไว้ในตัวแปร Java เพื่อนำไปสั่งงาน
     private void initViews() {
         imgBackground = findViewById(R.id.imgBackground);
         btnPause = findViewById(R.id.btnPause);
@@ -129,16 +131,18 @@ public class GameStageActivity extends BaseActivity {
             setItemPosition(imgSecretItem, secretItem.getBiasX(), secretItem.getBiasY());
         }
     }
-
+    //ทำหน้าที่ ตั้งค่าระบบนับเวลาถอยหลังของเกม, ผูกการอัปเดตตัวเลขเวลาบนหน้าจอ UI, และจัดการเหตุการณ์เมื่อเวลาหมด
     private void setupTimer() {
         TimerController timerController = gameStageController.getTimerController();
         if (timerController != null) {
+            //เป็นการใช้รูปแบบ Callback / Listener Pattern เพื่อรอรับสัญญาณเมื่อเวลาเปลี่ยนแปลง
             timerController.setOnTimerTickListener(new TimerController.OnTimerTickListener() {
+                //ทำงานทุกๆ วินาทีที่เวลาเดิน
                 @Override
                 public void onTick(String formattedTime) {
                     updateTimerText(formattedTime);
                 }
-
+                //ทำงานทันทีเมื่อเวลาหมด
                 @Override
                 public void onFinish() {
                     updateTimerText("00:00");
@@ -151,9 +155,9 @@ public class GameStageActivity extends BaseActivity {
                 }
             });
         }
-        gameStageController.startStage();
+        gameStageController.startStage();//เมื่อผูกระบบดักจับเวลาเสร็จเรียบร้อยแล้ว จะสั่งให้ Controller เริ่มต้นนับเวลาถอยหลังทันที
     }
-
+    //มื่อผู้เล่นพับหน้าจอ สลับแอป หรือมีสายเข้า ระบบจะสั่ง pauseStage() หยุดนับเวลาเกมไว้ชั่วคราวอัตโนมัติ
     @Override
     protected void onPause() {
         super.onPause();
@@ -161,7 +165,7 @@ public class GameStageActivity extends BaseActivity {
             gameStageController.pauseStage();
         }
     }
-
+    //เมื่อผู้เล่นกลับเข้ามาในแอป ระบบจะสั่ง resumeStage() เพื่อให้นับเวลาเกมต่อ
     @Override
     protected void onResume() {
         super.onResume();
@@ -169,7 +173,7 @@ public class GameStageActivity extends BaseActivity {
             gameStageController.resumeStage();
         }
     }
-
+    //เมื่อหน้าจอนี้ถูกปิดสั่งทำลาย ระบบจะสั่ง stopStage() หยุดการทำงานของตัวนับเวลาทั้งหมด เพื่อคืนหน่วยความจำและป้องกันปัญหา Memory Leak
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -177,35 +181,38 @@ public class GameStageActivity extends BaseActivity {
             gameStageController.stopStage();
         }
     }
-
+    //เช็ก null ป้องกันแอปเด้ง แล้วสั่งหยุดเวลาใน Controller
     public void pauseGameStage() {
         if (gameStageController != null) {
             gameStageController.pauseStage();
         }
     }
-
+    //เพิ่มระบบความปลอดภัยด้วยการเช็กว่า Activity ยังไม่ถูกปิดหรือถูกทำลายแล้วจึงสั่งเล่นเกมต่อ ป้องกันปัญหาแอปเด้ง
     public void resumeGameStage() {
         if (gameStageController != null && !isFinishing() && !isDestroyed()) {
             gameStageController.resumeStage();
         }
     }
 
+
     private void setupItemClickListeners() {
+        //การสั่งหยุดเกมและสร้างป๊อปอัพ
         btnPause.setOnClickListener(v -> {
             pauseGameStage();
             PauseDialog dialog = PauseDialog.newInstance(tvTimer.getText().toString());
             dialog.setListener(new PauseDialog.PauseDialogListener() {
+                //เมื่อผู้เล่นกดปุ่มเล่นต่อ ระบบจะเรียก resumeGameStage() เพื่อให้นับเวลาและเล่นเกมต่อ
                 @Override
                 public void onContinueClicked() {
                     resumeGameStage();
                 }
-
+                //เมื่อผู้เล่นกดปุ่มตั้งค่า ระบบจะสร้างและแสดง SettingsDialog ขึ้นมาซ้อนบนหน้าจอเพื่อปรับระดับเสียง
                 @Override
                 public void onOpenSettingsClicked() {
                     SettingsDialog settingsDialog = SettingsDialog.newInstance();
                     settingsDialog.show(getSupportFragmentManager(), "SettingsDialog");
                 }
-
+                //เมื่อผู้เล่นกดปุ่มกลับหน้าหลัก ระบบจะสร้าง Intent พาผู้เล่นย้อนกลับไป MainMenuActivityพร้อมล้าง Activity เก่าใน Stack ออกทั้งหมด ป้องกันการสะสมหน่วยความจำ
                 @Override
                 public void onHomeClicked() {
                     Intent intent = new Intent(GameStageActivity.this, MainMenuActivity.class);
@@ -213,15 +220,15 @@ public class GameStageActivity extends BaseActivity {
                     startActivity(intent);
                     finish();
                 }
-
+                //เมื่อผู้เล่นกดปุ่มเริ่มใหม่ ระบบจะเรียกคำสั่ง recreate() เพื่อโหลดและสร้างหน้า Activity ด่านนี้ใหม่อีกครั้งทันที
                 @Override
                 public void onRestartClicked() {
                     recreate();
                 }
             });
-            dialog.show(getSupportFragmentManager(), "PauseDialog");
+            dialog.show(getSupportFragmentManager(), "PauseDialog");//สั่งให้ PauseDialog แสดงผลขึ้นมาบนหน้าจอ
         });
-
+        //มื่อผู้เล่นชนะด่าน แล้วกดปุ่ม "ถัดไป"จะบันทึกเวลาการเล่นของด่านปัจจุบัน
         btnNext.setOnClickListener(v -> {
             int currentStage = gameStageController.getCurrentStage();
             TimerController timerController = gameStageController.getTimerController();
@@ -231,13 +238,15 @@ public class GameStageActivity extends BaseActivity {
 
             // ปลดล็อกด่านถัดไปในระบบ
             LevelController.unlockStage(currentStage + 1);
-
+            //ตรวจสอบลำดับด่านเพื่อนำทาง
             if (currentStage < 3) {
                 Intent intent = new Intent(GameStageActivity.this, StoryActivity.class);
                 intent.putExtra("STAGE_NUMBER", currentStage + 1);
                 startActivity(intent);
                 finish();
-            } else {
+            }
+            //กรณีเล่นผ่านด่านสุดท้าย ดึงเวลาของทุกด่านและเวลารวมทั้งเกม เพื่อนำไปแสดงในหน้าสรุปผล
+            else {
                 Intent intent = new Intent(GameStageActivity.this, EndingActivity.class);
                 intent.putExtra("ENDING_TYPE", isSecretItemFound() ? "SPECIAL" : "NORMAL");
                 intent.putExtra("LEVEL1_TIME", GameSessionManager.getLevel1FormattedTime());
@@ -249,15 +258,19 @@ public class GameStageActivity extends BaseActivity {
             }
         });
 
+        //การจัดการ Event เมื่อผู้เล่นกดเก็บไอเท็ม อัปเดตการแสดงผลบนหน้าจอทันที
         // 1. ไอเท็มธรรมดา ชิ้นที่ 1
         imgHiddenItem1.setOnClickListener(v -> {
             imgHiddenItem1.setVisibility(View.GONE);
             imgQuestItem1.setImageResource(colorRes1);
+            //ส่งสภาวะไปประมวลผลที่ Controller
             boolean allFound = gameStageController.collectNormalItem(0);
             List<Item> items = gameStageController.getNormalItems();
+            //บันทึกข้อมูลคำศัพท์ลงสมุดโน้ต
             if (items != null && items.size() > 0) {
                 NotebookController.addUnlockedDiscoveredItem(items.get(0).getItemName());
             }
+            //เงื่อนไขเมื่อหาครบทุกชิ้นปลดล็อกด่านถัดไปในระบบ
             if (allFound) {
                 LevelController.unlockStage(gameStageController.getCurrentStage() + 1);
                 btnNext.setVisibility(View.VISIBLE);
@@ -325,13 +338,13 @@ public class GameStageActivity extends BaseActivity {
         params.verticalBias = biasY;
         item.setLayoutParams(params);
     }
-
+    //อัปเดตตัวเลขเวลาถอยหลังบนหน้าจอ UI
     public void updateTimerText(String timeFormatted) {
         if (tvTimer != null) {
             tvTimer.setText(timeFormatted);
         }
     }
-
+    //ตรวจสอบว่าผู้เล่นเก็บ "ไอเท็มลับ" ในด่านนี้ได้แล้วหรือยัง
     public boolean isSecretItemFound() {
         return gameStageController != null && gameStageController.getSecretItem() != null && gameStageController.getSecretItem().isCollected();
     }
